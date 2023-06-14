@@ -28,7 +28,7 @@ export default function LoreItem({
     )
     return (
         <Skeleton isLoaded={isLoaded}>
-            <Card minW={250} minH={250}>
+            <Card w={350} minH={300}>
                 <CardHeader>
                     <Flex justify="space-between" align="center">
                         <Heading size="md">{title}</Heading>

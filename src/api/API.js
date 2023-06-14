@@ -14,7 +14,6 @@ class API {
      * @returns {Promise<any>}
      */
     async #axiosHandler(route, config = {}) {
-        console.log(this.#url + route)
         try {
             const result = await axios({
                 method: 'get',
