@@ -38,7 +38,6 @@ class API {
      * Creates new lore in database
      */
     async createLore(newLore) {
-        console.log({ newLore })
         return this.#axiosHandler('lore', { method: 'post', data: newLore })
     }
 }
