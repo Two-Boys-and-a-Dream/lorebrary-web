@@ -33,6 +33,14 @@ class API {
     async getAllLore() {
         return this.#axiosHandler('lore')
     }
+
+    /**
+     * Creates new lore in database
+     */
+    async createLore(newLore) {
+        console.log({ newLore })
+        return this.#axiosHandler('lore', { method: 'post', data: newLore })
+    }
 }
 
 export default new API()
