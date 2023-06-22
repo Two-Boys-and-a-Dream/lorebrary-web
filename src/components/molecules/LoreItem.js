@@ -14,18 +14,19 @@ import {
     AccordionPanel,
     Box,
 } from '@chakra-ui/react'
+import { useQuery } from '@tanstack/react-query'
 import { DateTime } from 'luxon'
 import { LoreMenu } from '../organisms'
+import { API } from '../../api'
 
-export default function LoreItem({
-    title,
-    subtitle,
-    game,
-    createdAt,
-    text,
-    isLoaded,
-    _id,
-}) {
+export default function LoreItem({ isLoaded, _id }) {
+    const { data } = useQuery({
+        queryKey: ['lore', _id],
+        queryFn: () => API.getLoreById(_id),
+        enabled: !!_id,
+    })
+    const { title, subtitle, game, createdAt, text } = data || {}
+
     return (
         <Skeleton isLoaded={isLoaded}>
             <Card w={350} minH={300}>
@@ -38,7 +39,11 @@ export default function LoreItem({
 
                 <Divider />
 
-                <CardBody>
+                <CardBody
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="space-between"
+                >
                     <Text mb={5} whiteSpace="pre-wrap">
                         {text}
                     </Text>

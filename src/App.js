@@ -10,7 +10,15 @@ const queryClient = new QueryClient()
 
 export function App() {
     return (
-        <ChakraProvider theme={theme}>
+        <ChakraProvider
+            theme={theme}
+            toastOptions={{
+                defaultOptions: {
+                    position: 'top',
+                    isClosable: true,
+                },
+            }}
+        >
             <QueryClientProvider client={queryClient}>
                 <MainLayout>
                     <Home />

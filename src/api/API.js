@@ -47,6 +47,20 @@ class API {
     async deleteLore(_id) {
         return this.#axiosHandler(`lore/${_id}`, { method: 'delete' })
     }
+
+    /**
+     * Updates lore by _id
+     */
+    async updateLore(updatedLore) {
+        return this.#axiosHandler('lore/update', {
+            method: 'post',
+            data: updatedLore,
+        })
+    }
+
+    async getLoreById(_id) {
+        return this.#axiosHandler(`lore/${_id}`)
+    }
 }
 
 export default new API()
