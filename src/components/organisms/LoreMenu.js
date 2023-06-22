@@ -13,6 +13,10 @@ import { AlertPopup } from '../molecules'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { API } from '../../api'
 
+/**
+ * Hamburger menu on each LoreItem that gives
+ * Update/Delete functionality
+ */
 function LoreMenu({ _id }) {
     const { isOpen, onOpen, onClose } = useDisclosure()
     const cancelRef = React.useRef()
