@@ -40,6 +40,13 @@ class API {
     async createLore(newLore) {
         return this.#axiosHandler('lore', { method: 'post', data: newLore })
     }
+
+    /**
+     * Deletes lore by _id in database
+     */
+    async deleteLore(_id) {
+        return this.#axiosHandler(`lore/${_id}`, { method: 'delete' })
+    }
 }
 
 export default new API()

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { Flex, Text, theme } from '@chakra-ui/react'
 import { API } from '../../api'
-import { LoreItem } from '../atoms'
+import { LoreItem } from '../molecules'
 
 export default function Home() {
     const { data, isLoading, isFetched, error } = useQuery({
