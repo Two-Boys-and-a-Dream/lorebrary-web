@@ -39,7 +39,9 @@ export default function LoreItem({
                 <Divider />
 
                 <CardBody>
-                    <Text mb={5}>{text}</Text>
+                    <Text mb={5} whiteSpace="pre-wrap">
+                        {text}
+                    </Text>
                     <Accordion allowToggle>
                         <AccordionItem>
                             <h2>
