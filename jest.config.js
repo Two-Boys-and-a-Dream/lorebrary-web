@@ -83,7 +83,10 @@ export default {
   ],
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
-  // moduleNameMapper: {},
+  moduleNameMapper: {
+    '\\.(css|less|scss|sass)$': 'jest-transform-stub',
+    '\\.(jpg|jpeg|png|gif|svg|webp)$': 'jest-transform-stub',
+  },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
@@ -127,10 +130,10 @@ export default {
   // runner: "jest-runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  setupFiles: ['./__mocks__/jestSetup.js'],
+  // setupFiles: ['./__mocks__/jestSetup.js'],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
-  // setupFilesAfterEnv: [],
+  setupFilesAfterEnv: ['<rootDir>/__mocks__/setupTests.js'],
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.
   // slowTestThreshold: 5,

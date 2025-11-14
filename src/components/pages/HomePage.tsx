@@ -6,7 +6,7 @@ import { LoreItem } from '../molecules'
 
 type LoreOrPlaceholder = Lore | { indexKey: number; _id: undefined }
 
-export default function Home() {
+export default function HomePage() {
   const queryClient = useQueryClient()
   const { data, isLoading, isFetched, error } = useQuery({
     queryKey: ['lore'],
