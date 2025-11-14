@@ -258,17 +258,15 @@ describe('App Component - Full User Interaction Flows', () => {
       })
 
       // Find the lore card and open its menu
-      const loreCards = screen.getAllByRole('heading', { level: 2 })
-      const firstCard = loreCards[0].closest(
-        '[class*="chakra-card"]'
-      ) as HTMLElement
-      expect(firstCard).toBeInTheDocument()
-
-      // Click the hamburger menu button
-      const menuButton = within(firstCard).getByRole('button', {
-        name: /options/i,
+      await waitFor(() => {
+        expect(
+          screen.getAllByRole('heading', { level: 2 }).length
+        ).toBeGreaterThan(0)
       })
-      await user.click(menuButton)
+
+      // Click the hamburger menu button (first one)
+      const menuButtons = screen.getAllByRole('button', { name: /options/i })
+      await user.click(menuButtons[0])
 
       // Click Update option
       const updateMenuItem = screen.getByRole('menuitem', { name: /update/i })
@@ -330,16 +328,15 @@ describe('App Component - Full User Interaction Flows', () => {
       })
 
       // Find the lore card and open its menu
-      const loreCards = screen.getAllByRole('heading', { level: 2 })
-      const firstCard = loreCards[0].closest(
-        '[class*="chakra-card"]'
-      ) as HTMLElement
-
-      // Click the hamburger menu button
-      const menuButton = within(firstCard).getByRole('button', {
-        name: /options/i,
+      await waitFor(() => {
+        expect(
+          screen.getAllByRole('heading', { level: 2 }).length
+        ).toBeGreaterThan(0)
       })
-      await user.click(menuButton)
+
+      // Click the hamburger menu button (first one)
+      const menuButtons = screen.getAllByRole('button', { name: /options/i })
+      await user.click(menuButtons[0])
 
       // Click Delete option
       const deleteMenuItem = screen.getByRole('menuitem', { name: /delete/i })
@@ -387,14 +384,13 @@ describe('App Component - Full User Interaction Flows', () => {
       })
 
       // Open menu and click delete
-      const loreCards = screen.getAllByRole('heading', { level: 2 })
-      const firstCard = loreCards[0].closest(
-        '[class*="chakra-card"]'
-      ) as HTMLElement
-      const menuButton = within(firstCard).getByRole('button', {
-        name: /options/i,
+      await waitFor(() => {
+        expect(
+          screen.getAllByRole('heading', { level: 2 }).length
+        ).toBeGreaterThan(0)
       })
-      await user.click(menuButton)
+      const menuButtons = screen.getAllByRole('button', { name: /options/i })
+      await user.click(menuButtons[0])
 
       const deleteMenuItem = screen.getByRole('menuitem', { name: /delete/i })
       await user.click(deleteMenuItem)
@@ -562,14 +558,13 @@ describe('App Component - Full User Interaction Flows', () => {
       })
 
       // Open menu and delete
-      const loreCards = screen.getAllByRole('heading', { level: 2 })
-      const firstCard = loreCards[0].closest(
-        '[class*="chakra-card"]'
-      ) as HTMLElement
-      const menuButton = within(firstCard).getByRole('button', {
-        name: /options/i,
+      await waitFor(() => {
+        expect(
+          screen.getAllByRole('heading', { level: 2 }).length
+        ).toBeGreaterThan(0)
       })
-      await user.click(menuButton)
+      const menuButtons = screen.getAllByRole('button', { name: /options/i })
+      await user.click(menuButtons[0])
 
       await user.click(screen.getByRole('menuitem', { name: /delete/i }))
 
@@ -646,14 +641,13 @@ describe('App Component - Full User Interaction Flows', () => {
         ).toBeGreaterThan(0)
       })
 
-      const loreCards = screen.getAllByRole('heading', { level: 2 })
-      const firstCard = loreCards[0].closest(
-        '[class*="chakra-card"]'
-      ) as HTMLElement
-      const menuButton = within(firstCard).getByRole('button', {
-        name: /options/i,
+      await waitFor(() => {
+        expect(
+          screen.getAllByRole('heading', { level: 2 }).length
+        ).toBeGreaterThan(0)
       })
-      await user.click(menuButton)
+      const menuButtons = screen.getAllByRole('button', { name: /options/i })
+      await user.click(menuButtons[0])
       await user.click(screen.getByRole('menuitem', { name: /update/i }))
 
       await waitFor(() => {
@@ -672,7 +666,10 @@ describe('App Component - Full User Interaction Flows', () => {
       })
 
       // Operation 3: Delete a lore
-      await user.click(menuButton)
+      const menuButtonsForDelete = screen.getAllByRole('button', {
+        name: /options/i,
+      })
+      await user.click(menuButtonsForDelete[0])
       await user.click(screen.getByRole('menuitem', { name: /delete/i }))
 
       await waitFor(() => {
