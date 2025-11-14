@@ -27,14 +27,8 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
    */
   const mutation = useMutation({
     mutationFn: async (newLore: NewLore) => API.createLore(newLore),
-    onError: (error: unknown) => {
-      let errorMessage = 'An error occurred'
-      if (typeof error === 'string') {
-        errorMessage = error
-      } else if (error instanceof Error) {
-        errorMessage = error.message
-      }
-      messageApi.error(errorMessage)
+    onError: (error: Error) => {
+      messageApi.error(error.message)
     },
     onSuccess: async () => {
       messageApi.success('Lore created!')

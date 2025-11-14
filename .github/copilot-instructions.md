@@ -77,12 +77,11 @@ const data = queryClient.getQueryData<Lore>(['lore', _id])
 
 1. Show toast on success/error
 2. Invalidate `['lore']` query on success (triggers HomePage refetch)
-3. Handle both string and non-string errors in `onError`
 
 ```typescript
 const mutation = useMutation({
   mutationFn: API.deleteLore,
-  onError: (error: unknown) => {
+  onError: (error: Error) => {
     toast({
       title: 'Network error',
       description: typeof error === 'string' ? error : 'An error occurred',

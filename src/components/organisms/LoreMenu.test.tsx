@@ -170,12 +170,12 @@ describe('LoreMenu', () => {
       })
     })
 
-    test('shows string error message when delete fails with string error', async () => {
+    test('shows error message when delete fails', async () => {
       const user = userEvent.setup()
       const mockDeleteLore = API.deleteLore as jest.MockedFunction<
         typeof API.deleteLore
       >
-      mockDeleteLore.mockRejectedValue('Delete failed')
+      mockDeleteLore.mockRejectedValue(new Error('Delete failed'))
 
       renderWithProviders(<LoreMenu _id={mockId} />)
 
@@ -192,37 +192,9 @@ describe('LoreMenu', () => {
       })
       await user.click(confirmButton)
 
-      // String error message should appear
+      // Error message should appear
       await waitFor(() => {
         expect(screen.getByText(/delete failed/i)).toBeInTheDocument()
-      })
-    })
-
-    test('shows generic error message when delete fails with non-string error', async () => {
-      const user = userEvent.setup()
-      const mockDeleteLore = API.deleteLore as jest.MockedFunction<
-        typeof API.deleteLore
-      >
-      mockDeleteLore.mockRejectedValue({ message: 'Error object' })
-
-      renderWithProviders(<LoreMenu _id={mockId} />)
-
-      // Open menu and click delete
-      const menuButton = screen.getByRole('button', { name: /options/i })
-      await user.click(menuButton)
-
-      const deleteItem = screen.getByText(/^delete$/i)
-      await user.click(deleteItem)
-
-      // Confirm deletion
-      const confirmButton = await screen.findByRole('button', {
-        name: /^delete$/i,
-      })
-      await user.click(confirmButton)
-
-      // Generic error message should appear
-      await waitFor(() => {
-        expect(screen.getByText(/an error occurred/i)).toBeInTheDocument()
       })
     })
   })
@@ -251,12 +223,12 @@ describe('LoreMenu', () => {
       })
     })
 
-    test('shows string error message when update fails', async () => {
+    test('shows error message when update fails', async () => {
       const user = userEvent.setup()
       const mockUpdateLore = API.updateLore as jest.MockedFunction<
         typeof API.updateLore
       >
-      mockUpdateLore.mockRejectedValue('Update failed')
+      mockUpdateLore.mockRejectedValue(new Error('Update failed'))
 
       // Call the mutation directly to test error handling
       renderWithProviders(<LoreMenu _id={mockId} />)
@@ -276,39 +248,9 @@ describe('LoreMenu', () => {
       const submitButton = screen.getByRole('button', { name: /^update$/i })
       await user.click(submitButton)
 
-      // Error message with string should appear
+      // Error message should appear
       await waitFor(() => {
         expect(screen.getByText(/update failed/i)).toBeInTheDocument()
-      })
-    })
-
-    test('shows generic error message when update fails with non-string error', async () => {
-      const user = userEvent.setup()
-      const mockUpdateLore = API.updateLore as jest.MockedFunction<
-        typeof API.updateLore
-      >
-      mockUpdateLore.mockRejectedValue({ message: 'Error object' })
-
-      renderWithProviders(<LoreMenu _id={mockId} />)
-
-      const menuButton = screen.getByRole('button', { name: /options/i })
-      await user.click(menuButton)
-
-      const updateItem = screen.getByText(/^update$/i)
-      await user.click(updateItem)
-
-      // Fill the form to make it valid
-      const inputs = await screen.findAllByRole('textbox')
-      for (const input of inputs) {
-        await user.type(input, 'test')
-      }
-
-      const submitButton = screen.getByRole('button', { name: /^update$/i })
-      await user.click(submitButton)
-
-      // Generic error message should appear
-      await waitFor(() => {
-        expect(screen.getByText(/an error occurred/i)).toBeInTheDocument()
       })
     })
   })

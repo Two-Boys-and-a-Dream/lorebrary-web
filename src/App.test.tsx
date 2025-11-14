@@ -484,12 +484,12 @@ describe('App Component - Full User Interaction Flows', () => {
       })
     })
 
-    test('string error on create shows specific error message', async () => {
+    test('error on create shows specific error message', async () => {
       const user = userEvent.setup()
       const mockCreateLore = API.createLore as jest.MockedFunction<
         typeof API.createLore
       >
-      mockCreateLore.mockRejectedValue('Failed to create')
+      mockCreateLore.mockRejectedValue(new Error('Failed to create'))
 
       render(<App />)
 
@@ -507,41 +507,9 @@ describe('App Component - Full User Interaction Flows', () => {
       // Submit
       await user.click(screen.getByRole('button', { name: /^create$/i }))
 
-      // String error message should appear
+      // Error message should appear
       await waitFor(() => {
         expect(screen.getByText(/failed to create/i)).toBeInTheDocument()
-      })
-
-      // Modal should remain open
-      expect(screen.getByText(/create lore/i)).toBeInTheDocument()
-    })
-
-    test('non-string error on create shows generic error message', async () => {
-      const user = userEvent.setup()
-      const mockCreateLore = API.createLore as jest.MockedFunction<
-        typeof API.createLore
-      >
-      mockCreateLore.mockRejectedValue({ message: 'Error object' })
-
-      render(<App />)
-
-      await waitFor(() => {
-        expect(screen.getByText(mockLoreData[0].title)).toBeInTheDocument()
-      })
-
-      // Open modal and fill form
-      await user.click(screen.getByRole('button', { name: /add lore/i }))
-      await user.type(getInputByName('title'), 'Test')
-      await user.type(getInputByName('subtitle'), 'Test')
-      await user.type(getInputByName('game'), 'Test')
-      await user.type(getInputByName('text'), 'Test')
-
-      // Submit
-      await user.click(screen.getByRole('button', { name: /^create$/i }))
-
-      // Generic error message should appear
-      await waitFor(() => {
-        expect(screen.getByText(/an error occurred/i)).toBeInTheDocument()
       })
 
       // Modal should remain open
