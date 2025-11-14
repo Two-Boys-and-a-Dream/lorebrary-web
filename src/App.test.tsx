@@ -13,7 +13,7 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { App } from './App'
-import { API } from './api'
+import { API, type Lore, type NewLore } from './api'
 import { mockLoreData } from './utils/testData'
 import { cleanupToasts } from './utils/testUtils'
 
@@ -42,6 +42,37 @@ describe('App Component - Full User Interaction Flows', () => {
       typeof API.getAllLore
     >
     mockGetAllLore.mockResolvedValue(mockLoreData)
+
+    // Reset createLore to its default successful implementation
+    const mockCreateLore = API.createLore as jest.MockedFunction<
+      typeof API.createLore
+    >
+    mockCreateLore.mockImplementation((newLore: NewLore) => {
+      const lore: Lore = {
+        _id: `${mockLoreData.length + 1}`,
+        ...newLore,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }
+      return Promise.resolve(lore)
+    })
+
+    // Reset updateLore to its default successful implementation
+    const mockUpdateLore = API.updateLore as jest.MockedFunction<
+      typeof API.updateLore
+    >
+    mockUpdateLore.mockImplementation((updatedLore: Lore) => {
+      return Promise.resolve({
+        ...updatedLore,
+        updatedAt: new Date().toISOString(),
+      })
+    })
+
+    // Reset deleteLore to its default successful implementation
+    const mockDeleteLore = API.deleteLore as jest.MockedFunction<
+      typeof API.deleteLore
+    >
+    mockDeleteLore.mockResolvedValue(undefined)
   })
 
   describe('Initial app load and data display', () => {
@@ -526,9 +557,6 @@ describe('App Component - Full User Interaction Flows', () => {
   describe('Multiple operations flow', () => {
     test('create, update, and delete lore items in sequence', async () => {
       const user = userEvent.setup()
-      const mockCreateLore = API.createLore as jest.MockedFunction<
-        typeof API.createLore
-      >
       const mockUpdateLore = API.updateLore as jest.MockedFunction<
         typeof API.updateLore
       >
@@ -545,20 +573,36 @@ describe('App Component - Full User Interaction Flows', () => {
 
       // Operation 1: Create new lore
       await user.click(screen.getByRole('button', { name: /add lore/i }))
+
+      // Verify modal is open before filling form
+      await waitFor(() => {
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
       await user.type(getInputByName('title'), 'New Story')
       await user.type(getInputByName('subtitle'), 'Chapter 1')
       await user.type(getInputByName('game'), 'Adventure')
       await user.type(getInputByName('text'), 'Content here')
-      await user.click(screen.getByRole('button', { name: /^create$/i }))
 
-      // Wait for mutation to complete and modal to close
-      await waitFor(() => {
-        expect(mockCreateLore).toHaveBeenCalled()
-      })
+      const createButton = screen.getByRole('button', { name: /^create$/i })
+      await user.click(createButton)
 
-      await waitFor(() => {
-        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-      })
+      // Wait for the create button to stop being in loading state
+      await waitFor(
+        () => {
+          const button = screen.queryByRole('button', { name: /creating/i })
+          expect(button).not.toBeInTheDocument()
+        },
+        { timeout: 3000 }
+      )
+
+      // Wait for modal to close (modal closes on success in onSuccess callback)
+      await waitFor(
+        () => {
+          expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+        },
+        { timeout: 3000 }
+      )
 
       // Operation 2: Update existing lore
       // Wait for the lore cards to be available again

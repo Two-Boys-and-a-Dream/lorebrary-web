@@ -30,11 +30,21 @@ export const renderWithProviders = (
 }
 
 /**
- * Cleanup function to close all Chakra UI toasts between tests
- * Call this in afterEach to ensure toasts don't persist between tests
+ * Cleanup function to close all Chakra UI toasts and modals between tests
+ * Call this in afterEach to ensure UI elements don't persist between tests
  */
 export const cleanupToasts = () => {
   act(() => {
+    // Close all modal close buttons
+    const modalCloseButtons = document.querySelectorAll(
+      '.chakra-modal__close-btn'
+    )
+    modalCloseButtons.forEach((button) => {
+      if (button instanceof HTMLElement) {
+        button.click()
+      }
+    })
+
     // Close all Chakra UI toasts by clicking their close buttons
     const closeButtons = document.querySelectorAll(
       '[aria-label="Close"], .chakra-toast__close-button'
@@ -45,9 +55,15 @@ export const cleanupToasts = () => {
       }
     })
 
+    // Remove all toast elements from the DOM
+    const toasts = document.querySelectorAll('[role="status"], [role="alert"]')
+    toasts.forEach((toast) => {
+      toast.remove()
+    })
+
     // Also remove any toast containers from the DOM
     const toastContainers = document.querySelectorAll(
-      '.chakra-toast__container'
+      '.chakra-toast__container, [class*="toast"]'
     )
     toastContainers.forEach((container) => {
       container.remove()
