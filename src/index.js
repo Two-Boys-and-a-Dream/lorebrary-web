@@ -7,8 +7,8 @@ const container = document.getElementById('app')
 const root = createRoot(container)
 
 root.render(
-    <>
-        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-        <App />
-    </>
+  <>
+    <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+    <App />
+  </>
 )

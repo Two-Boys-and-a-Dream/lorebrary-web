@@ -6,55 +6,55 @@ import LoreFormModal from './LoreFormModal'
 import { buildInitialFormData } from '../../utils/utils'
 
 export default function UpdateLoreMenuItem({ _id }) {
-    const { isOpen, onOpen, onClose } = useDisclosure()
-    const { data } = useQuery({
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { data } = useQuery({
+    queryKey: ['lore', _id],
+    queryFn: () => API.getLoreById(_id),
+    enabled: !!_id,
+  })
+
+  /**
+   * Query/Mutation stuff
+   */
+  const toast = useToast()
+  const queryClient = useQueryClient()
+  const mutation = useMutation({
+    mutationFn: async (newLore) => API.updateLore(newLore),
+    onError: (error) =>
+      toast({
+        title: 'Network error',
+        description: error,
+        status: 'error',
+      }),
+    onSuccess: async () => {
+      toast({
+        title: 'Success',
+        description: 'Lore updated!',
+        status: 'success',
+      })
+      await queryClient.invalidateQueries({
         queryKey: ['lore', _id],
-        queryFn: () => API.getLoreById(_id),
-        enabled: !!_id,
-    })
+        exact: true,
+      })
+      onClose()
+    },
+  })
 
-    /**
-     * Query/Mutation stuff
-     */
-    const toast = useToast()
-    const queryClient = useQueryClient()
-    const mutation = useMutation({
-        mutationFn: async (newLore) => API.updateLore(newLore),
-        onError: (error) =>
-            toast({
-                title: 'Network error',
-                description: error,
-                status: 'error',
-            }),
-        onSuccess: async () => {
-            toast({
-                title: 'Success',
-                description: 'Lore updated!',
-                status: 'success',
-            })
-            await queryClient.invalidateQueries({
-                queryKey: ['lore', _id],
-                exact: true,
-            })
-            onClose()
-        },
-    })
+  const existingData = buildInitialFormData(data)
 
-    const existingData = buildInitialFormData(data)
-
-    return (
-        <>
-            <MenuItem icon={<EditIcon />} onClick={onOpen}>
-                Update
-            </MenuItem>
-            <LoreFormModal
-                _id={_id}
-                initialFormData={existingData}
-                mutation={mutation}
-                isOpen={isOpen}
-                onClose={onClose}
-                onOpen={onOpen}
-            />
-        </>
-    )
+  return (
+    <>
+      <MenuItem icon={<EditIcon />} onClick={onOpen}>
+        Update
+      </MenuItem>
+      <LoreFormModal
+        _id={_id}
+        initialFormData={existingData}
+        mutation={mutation}
+        isOpen={isOpen}
+        onClose={onClose}
+        onOpen={onOpen}
+      />
+    </>
+  )
 }
