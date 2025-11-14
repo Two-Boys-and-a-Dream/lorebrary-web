@@ -6,7 +6,13 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { theme } from './theme'
 import { MainLayout } from './components/layouts'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false, // Disable retries for faster error handling in tests
+    },
+  },
+})
 
 export function App() {
   return (
@@ -14,7 +20,7 @@ export function App() {
       theme={theme}
       toastOptions={{
         defaultOptions: {
-          position: 'top',
+          position: 'bottom',
           isClosable: true,
         },
       }}

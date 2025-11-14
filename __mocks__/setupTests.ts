@@ -16,4 +16,10 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 })
 
+// Mock window.scrollTo for components that trigger scroll behavior (e.g., modals)
+Object.defineProperty(window, 'scrollTo', {
+  writable: true,
+  value: jest.fn(),
+})
+
 jest.useFakeTimers({ advanceTimers: true })

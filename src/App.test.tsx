@@ -15,6 +15,7 @@ import userEvent from '@testing-library/user-event'
 import { App } from './App'
 import { API } from './api'
 import { mockLoreData } from './utils/testData'
+import { cleanupToasts } from './utils/testUtils'
 
 // Mock the API module
 jest.mock('./api')
@@ -29,6 +30,20 @@ const getInputByName = (name: string) => {
 }
 
 describe('App Component - Full User Interaction Flows', () => {
+  // Cleanup toasts between tests to prevent interference
+  afterEach(() => {
+    cleanupToasts()
+  })
+
+  // Reset mock implementations before each test
+  beforeEach(() => {
+    // Reset getAllLore to return mockLoreData by default
+    const mockGetAllLore = API.getAllLore as jest.MockedFunction<
+      typeof API.getAllLore
+    >
+    mockGetAllLore.mockResolvedValue(mockLoreData)
+  })
+
   describe('Initial app load and data display', () => {
     test('renders app with navbar and loads lore items', async () => {
       render(<App />)
@@ -426,6 +441,8 @@ describe('App Component - Full User Interaction Flows', () => {
 
       render(<App />)
 
+      await screen.findByText(/network connection failed/i)
+
       // Error message should appear
       await waitFor(() => {
         expect(
@@ -534,11 +551,11 @@ describe('App Component - Full User Interaction Flows', () => {
       await user.type(getInputByName('text'), 'Content here')
       await user.click(screen.getByRole('button', { name: /^create$/i }))
 
+      // Wait for mutation to complete and modal to close
       await waitFor(() => {
         expect(mockCreateLore).toHaveBeenCalled()
       })
 
-      // Wait for modal to close and data to be refreshed
       await waitFor(() => {
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
       })

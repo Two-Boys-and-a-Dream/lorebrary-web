@@ -1,4 +1,4 @@
-import { render, type RenderOptions } from '@testing-library/react'
+import { render, type RenderOptions, act } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ChakraProvider } from '@chakra-ui/react'
 import { theme } from '../theme'
@@ -27,6 +27,32 @@ export const renderWithProviders = (
     </QueryClientProvider>,
     options
   )
+}
+
+/**
+ * Cleanup function to close all Chakra UI toasts between tests
+ * Call this in afterEach to ensure toasts don't persist between tests
+ */
+export const cleanupToasts = () => {
+  act(() => {
+    // Close all Chakra UI toasts by clicking their close buttons
+    const closeButtons = document.querySelectorAll(
+      '[aria-label="Close"], .chakra-toast__close-button'
+    )
+    closeButtons.forEach((button) => {
+      if (button instanceof HTMLElement) {
+        button.click()
+      }
+    })
+
+    // Also remove any toast containers from the DOM
+    const toastContainers = document.querySelectorAll(
+      '.chakra-toast__container'
+    )
+    toastContainers.forEach((container) => {
+      container.remove()
+    })
+  })
 }
 
 // Re-export everything from testing-library
