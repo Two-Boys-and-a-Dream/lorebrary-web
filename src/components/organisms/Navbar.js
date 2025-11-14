@@ -68,6 +68,7 @@ export default function Navbar() {
         <ThemeButton />
       </Flex>
       <LoreFormModal
+        key={isOpen ? 'create-open' : 'create-closed'}
         initialFormData={initialFormData}
         mutation={mutation}
         isOpen={isOpen}
