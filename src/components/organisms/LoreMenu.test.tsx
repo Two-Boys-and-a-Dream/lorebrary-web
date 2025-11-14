@@ -84,10 +84,9 @@ describe('LoreMenu', () => {
       const deleteItem = screen.getByRole('menuitem', { name: /delete/i })
       await user.click(deleteItem)
 
-      // Alert dialog should appear
-      await waitFor(() => {
-        expect(screen.getByText(/delete lore/i)).toBeInTheDocument()
-      })
+      // Alert dialog should appear - use findByText which waits automatically
+      const dialogTitle = await screen.findByText(/delete lore/i)
+      expect(dialogTitle).toBeInTheDocument()
     })
 
     test('closes menu after delete item is clicked', async () => {
@@ -103,9 +102,8 @@ describe('LoreMenu', () => {
       await user.click(deleteItem)
 
       // Menu should close (confirmation dialog appears)
-      await waitFor(() => {
-        expect(screen.getByText(/delete lore/i)).toBeInTheDocument()
-      })
+      const dialogTitle = await screen.findByText(/delete lore/i)
+      expect(dialogTitle).toBeInTheDocument()
     })
 
     test('deletes lore when delete is confirmed', async () => {

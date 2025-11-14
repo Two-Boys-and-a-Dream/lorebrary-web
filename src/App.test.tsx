@@ -228,9 +228,9 @@ describe('App Component - Full User Interaction Flows', () => {
       await user.click(screen.getByRole('button', { name: /add lore/i }))
       await user.type(getInputByName('title'), 'Unsaved')
 
-      // Close modal without saving
-      const closeButton = screen.getByLabelText(/close/i)
-      await user.click(closeButton)
+      // Close modal without saving - use Cancel button instead of close icon
+      const cancelButton = screen.getByRole('button', { name: /cancel/i })
+      await user.click(cancelButton)
 
       // Modal should close
       await waitFor(() => {
@@ -259,7 +259,7 @@ describe('App Component - Full User Interaction Flows', () => {
       // Find the lore card and open its menu
       await waitFor(() => {
         expect(
-          screen.getAllByRole('heading', { level: 2 }).length
+          screen.getAllByRole('heading', { level: 4 }).length
         ).toBeGreaterThan(0)
       })
 
@@ -425,10 +425,13 @@ describe('App Component - Full User Interaction Flows', () => {
       const user = userEvent.setup()
       render(<App />)
 
+      // The first displayed item is mockLoreData[1] (The Forgotten Temple) due to sorting by date (newest first)
+      const firstDisplayedItem = mockLoreData[1]
+
       // Wait for lore items to load with full content (not just skeletons)
       await waitFor(() => {
-        expect(screen.getByText(mockLoreData[0].title)).toBeInTheDocument()
-        expect(screen.getByText(mockLoreData[0].text)).toBeInTheDocument()
+        expect(screen.getByText(firstDisplayedItem.title)).toBeInTheDocument()
+        expect(screen.getByText(firstDisplayedItem.text)).toBeInTheDocument()
       })
 
       // Find the Context accordion buttons - get the first one
@@ -439,19 +442,23 @@ describe('App Component - Full User Interaction Flows', () => {
       const accordionButton = accordionButtons[0]
 
       // Initially, detailed context (game, subtitle) should not be visible
-      expect(
-        screen.queryAllByText(`Game: ${mockLoreData[0].game}`)[0]
-      ).not.toBeVisible()
+      // Ant Design Collapse uses aria-hidden to hide content
+      const gameElements = screen.queryAllByText(
+        `Game: ${firstDisplayedItem.game}`
+      )
+      expect(gameElements.length).toBe(0)
 
       // Click accordion to expand
       await user.click(accordionButton)
 
       // Context details should now be visible (there may be multiple, check count changed)
       await waitFor(() => {
-        const gameTexts = screen.getAllByText(`Game: ${mockLoreData[0].game}`)
+        const gameTexts = screen.getAllByText(
+          `Game: ${firstDisplayedItem.game}`
+        )
         expect(gameTexts.length).toBeGreaterThan(0)
         const infoTexts = screen.getAllByText(
-          `Info: ${mockLoreData[0].subtitle}`
+          `Info: ${firstDisplayedItem.subtitle}`
         )
         expect(infoTexts.length).toBeGreaterThan(0)
       })

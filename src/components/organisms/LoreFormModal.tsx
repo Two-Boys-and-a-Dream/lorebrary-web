@@ -126,7 +126,11 @@ function LoreFormModal({
         maskClosable={false}
         width={800}
         title={`${_id ? 'Update' : 'Create'} Lore`}
+        destroyOnHidden
         footer={[
+          <Button key="cancel" onClick={handleClose}>
+            Cancel
+          </Button>,
           <Button
             key="submit"
             type="primary"

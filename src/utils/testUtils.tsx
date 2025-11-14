@@ -36,13 +36,17 @@ export const renderWithProviders = (
 export const cleanupToasts = () => {
   act(() => {
     try {
-      // Close all modal close buttons
-      const modalCloseButtons = document.querySelectorAll(
-        '.ant-modal-close, .ant-modal-close-x'
+      // Remove all Ant Design modals from the DOM
+      const modals = document.querySelectorAll(
+        '.ant-modal-root, .ant-modal-wrap'
       )
-      modalCloseButtons.forEach((button) => {
-        if (button instanceof HTMLElement) {
-          button.click()
+      modals.forEach((modal) => {
+        try {
+          if (modal.parentNode) {
+            modal.parentNode.removeChild(modal)
+          }
+        } catch {
+          // Ignore removal errors
         }
       })
 

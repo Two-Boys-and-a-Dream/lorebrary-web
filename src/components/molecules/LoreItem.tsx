@@ -24,6 +24,9 @@ export default function LoreItem({ isLoaded, _id }: LoreItemProps) {
   const data = queryClient.getQueryData<Lore>(['lore', _id])
   const { title, subtitle, game, createdAt, text } = data || {}
 
+  // Show skeleton if not loaded OR if data is not yet in cache
+  const showSkeleton = !isLoaded || !data
+
   const items: CollapseProps['items'] = [
     {
       key: '1',
@@ -43,7 +46,7 @@ export default function LoreItem({ isLoaded, _id }: LoreItemProps) {
   ]
 
   return (
-    <Skeleton loading={!isLoaded} active>
+    <Skeleton loading={showSkeleton} active>
       <Card
         style={{ width: 350, minHeight: 300 }}
         title={

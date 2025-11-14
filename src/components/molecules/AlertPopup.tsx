@@ -26,6 +26,7 @@ export default function AlertPopup({
       open={isOpen}
       onCancel={onClose}
       title={headerText}
+      destroyOnHidden
       footer={[
         <Button key="cancel" onClick={onClose}>
           Cancel

@@ -11,7 +11,6 @@ export default function HomePage() {
   const queryClient = useQueryClient()
   const {
     data = [],
-    isLoading,
     isFetched,
     error,
   } = useQuery({
@@ -37,7 +36,10 @@ export default function HomePage() {
       return sortedLore
     },
   })
-  if (error) return <Text>{String(error)}</Text>
+  if (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    return <Text>{errorMessage}</Text>
+  }
 
   // Create "fake" cards to render skeletons for while loading
   const loreData: LoreOrPlaceholder[] = !isFetched
@@ -49,7 +51,7 @@ export default function HomePage() {
   return (
     <Flex gap={40} wrap justify="center">
       {loreData.map(({ _id }) => {
-        return <LoreItem key={_id} _id={_id} isLoaded={!isLoading} />
+        return <LoreItem key={_id} _id={_id} isLoaded={isFetched} />
       })}
     </Flex>
   )

@@ -25,7 +25,13 @@ export default function UpdateLoreMenuItem({ _id }: UpdateLoreMenuItemProps) {
   const mutation = useMutation({
     mutationFn: async (newLore: Lore) => API.updateLore(newLore),
     onError: (error: unknown) => {
-      messageApi.error(typeof error === 'string' ? error : 'An error occurred')
+      let errorMessage = 'An error occurred'
+      if (typeof error === 'string') {
+        errorMessage = error
+      } else if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      messageApi.error(errorMessage)
     },
     onSuccess: async () => {
       messageApi.success('Lore updated!')
