@@ -1,67 +1,19 @@
-import { render, screen, waitFor } from '@testing-library/react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ChakraProvider } from '@chakra-ui/react'
+import { screen, waitFor } from '@testing-library/react'
+import { renderWithProviders } from '../../utils/testUtils'
 import HomePage from './HomePage'
 import { API } from '../../api'
-import { theme } from '../../theme'
+import { mockLoreData } from '../../utils/testData'
 
-// Mock the API module
-jest.mock('../../api', () => ({
-  API: {
-    getAllLore: jest.fn(),
-    updateLore: jest.fn(),
-    deleteLore: jest.fn(),
-  },
-}))
-
-const mockLoreData = [
-  {
-    _id: '1',
-    title: 'Test Lore 1',
-    subtitle: 'Test Subtitle 1',
-    game: 'Test Game 1',
-    text: 'Test text 1',
-    createdAt: '2025-01-01T00:00:00.000Z',
-    updatedAt: '2025-01-01T00:00:00.000Z',
-  },
-  {
-    _id: '2',
-    title: 'Test Lore 2',
-    subtitle: 'Test Subtitle 2',
-    game: 'Test Game 2',
-    text: 'Test text 2',
-    createdAt: '2025-01-02T00:00:00.000Z',
-    updatedAt: '2025-01-02T00:00:00.000Z',
-  },
-]
-
-const renderHomePage = () => {
-  // Create a new QueryClient for each test to ensure isolation
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  })
-
-  return render(
-    <QueryClientProvider client={queryClient}>
-      <ChakraProvider theme={theme}>
-        <HomePage />
-      </ChakraProvider>
-    </QueryClientProvider>
-  )
-}
+// Mock the API module - the mock implementation is in src/api/__mocks__/index.ts
+jest.mock('../../api')
 
 describe('HomePage Component', () => {
   test('renders HomePage component successfully', async () => {
     const mockGetAllLore = API.getAllLore as jest.MockedFunction<
       typeof API.getAllLore
     >
-    mockGetAllLore.mockResolvedValue(mockLoreData)
 
-    renderHomePage()
+    renderWithProviders(<HomePage />)
 
     // Wait for data to load
     await waitFor(() => {
@@ -78,30 +30,24 @@ describe('HomePage Component', () => {
         new Promise((resolve) => setTimeout(() => resolve(mockLoreData), 100))
     )
 
-    renderHomePage()
+    renderWithProviders(<HomePage />)
 
     // Should not show lore content initially (still loading)
-    expect(screen.queryByText('Test Lore 1')).not.toBeInTheDocument()
-    expect(screen.queryByText('Test Lore 2')).not.toBeInTheDocument()
+    expect(screen.queryByText(mockLoreData[0].title)).not.toBeInTheDocument()
+    expect(screen.queryByText(mockLoreData[1].title)).not.toBeInTheDocument()
   })
 
   test('displays lore items after data is fetched', async () => {
-    const mockGetAllLore = API.getAllLore as jest.MockedFunction<
-      typeof API.getAllLore
-    >
-
-    mockGetAllLore.mockResolvedValue(mockLoreData)
-
-    renderHomePage()
+    renderWithProviders(<HomePage />)
 
     // Wait for the data to be loaded - check for actual lore titles
     await waitFor(() => {
-      expect(screen.getByText('Test Lore 1')).toBeInTheDocument()
-      expect(screen.getByText('Test Lore 2')).toBeInTheDocument()
+      expect(screen.getByText(mockLoreData[0].title)).toBeInTheDocument()
+      expect(screen.getByText(mockLoreData[1].title)).toBeInTheDocument()
     })
 
-    // Should render two lore items
-    expect(mockGetAllLore).toHaveBeenCalledTimes(1)
+    // Should render lore items
+    expect(API.getAllLore).toHaveBeenCalledTimes(1)
   })
 
   test('displays error message when API call fails', async () => {
@@ -111,7 +57,7 @@ describe('HomePage Component', () => {
     const errorMessage = 'Failed to fetch lore'
     mockGetAllLore.mockRejectedValue(new Error(errorMessage))
 
-    renderHomePage()
+    renderWithProviders(<HomePage />)
 
     // Wait for error message to appear (error is prefixed with "Error: ")
     await waitFor(() => {
@@ -125,14 +71,14 @@ describe('HomePage Component', () => {
     >
     mockGetAllLore.mockResolvedValue([])
 
-    renderHomePage()
+    renderWithProviders(<HomePage />)
 
     // Wait for the query to complete
     await waitFor(() => {
-      expect(mockGetAllLore).toHaveBeenCalledTimes(1)
+      expect(API.getAllLore).toHaveBeenCalledTimes(1)
     })
 
     // Verify API was called
-    expect(mockGetAllLore).toHaveBeenCalledTimes(1)
+    expect(API.getAllLore).toHaveBeenCalledTimes(1)
   })
 })
