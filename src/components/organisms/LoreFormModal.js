@@ -90,7 +90,6 @@ function LoreFormModal({ isOpen, onClose, initialFormData, mutation, _id }) {
 
     // Check each object in formData to determine if any fields
     // are invalid.
-    // eslint-disable-next-line no-unused-vars
     for (const [_key, v] of Object.entries(clonedFormData)) {
       // Check for validation error
       const isError = validateString(v.value)
