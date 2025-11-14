@@ -1,6 +1,9 @@
 // This file is used to setup test types for TypeScript
 import '@testing-library/jest-dom'
 
+// Set up environment variables for tests
+process.env.API_URL = 'https://api.example.com/'
+
 // Mock window.matchMedia for components that use media queries
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
