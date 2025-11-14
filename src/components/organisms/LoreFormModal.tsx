@@ -136,7 +136,9 @@ function LoreFormModal({
       ]}
     >
       <Flex vertical gap={20}>
-        <Text style={{ fontSize: '18px' }}>Let&apos;s hear about that juicy new new</Text>
+        <Text style={{ fontSize: '18px' }}>
+          Let&apos;s hear about that juicy new new
+        </Text>
         {loreFieldsArr.map((field) => {
           // Assign component depending on field.
           // They all share same props anyways.

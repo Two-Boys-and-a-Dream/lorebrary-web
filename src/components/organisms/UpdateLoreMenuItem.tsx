@@ -47,7 +47,17 @@ export default function UpdateLoreMenuItem({ _id }: UpdateLoreMenuItemProps) {
 
   return (
     <>
-      <span onClick={onOpen} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <span
+        onClick={onOpen}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            onOpen()
+          }
+        }}
+        role="button"
+        tabIndex={0}
+        style={{ display: 'flex', alignItems: 'center', gap: 8 }}
+      >
         <EditOutlined />
         Update
       </span>

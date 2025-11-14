@@ -31,11 +31,14 @@ export default function LoreItem({ isLoaded, _id }: LoreItemProps) {
         }
       >
         <Flex vertical justify="space-between" style={{ minHeight: 200 }}>
-          <Text style={{ marginBottom: 20, whiteSpace: 'pre-wrap' }}>{text}</Text>
+          <Text style={{ marginBottom: 20, whiteSpace: 'pre-wrap' }}>
+            {text}
+          </Text>
           <Collapse ghost>
             <Panel header="Context" key="1">
               <Text>
-                Date: {createdAt && DateTime.fromISO(createdAt).toLocaleString()}
+                Date:{' '}
+                {createdAt && DateTime.fromISO(createdAt).toLocaleString()}
               </Text>
               <Divider style={{ margin: '8px 0' }} />
               <Text>Game: {game}</Text>

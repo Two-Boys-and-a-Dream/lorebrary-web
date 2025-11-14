@@ -10,7 +10,7 @@
  * - UI interactions (modals, accordions, menus)
  */
 
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { App } from './App'
 import { API, type Lore, type NewLore } from './api'
@@ -185,7 +185,9 @@ describe('App Component - Full User Interaction Flows', () => {
 
       // Should see validation error
       await waitFor(() => {
-        expect(screen.getByText(/please fill out all fields/i)).toBeInTheDocument()
+        expect(
+          screen.getByText(/please fill out all fields/i)
+        ).toBeInTheDocument()
       })
 
       // Modal should still be open

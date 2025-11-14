@@ -60,7 +60,9 @@ describe('LoreMenu', () => {
     const deleteItem = screen.getByText(/^delete$/i)
     await user.click(deleteItem)
 
-    const confirmButton = await screen.findByRole('button', { name: /^delete$/i })
+    const confirmButton = await screen.findByRole('button', {
+      name: /^delete$/i,
+    })
     await user.click(confirmButton)
 
     // Should call API with correct ID

@@ -45,7 +45,17 @@ export default function DeleteLoreMenuItem({ _id }: DeleteLoreMenuItemProps) {
 
   return (
     <>
-      <span onClick={onOpen} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <span
+        onClick={onOpen}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            onOpen()
+          }
+        }}
+        role="button"
+        tabIndex={0}
+        style={{ display: 'flex', alignItems: 'center', gap: 8 }}
+      >
         <DeleteOutlined />
         Delete
       </span>

@@ -22,7 +22,9 @@ export function App() {
     <ConfigProvider
       theme={{
         ...theme,
-        algorithm: darkMode ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
+        algorithm: darkMode
+          ? antdTheme.darkAlgorithm
+          : antdTheme.defaultAlgorithm,
       }}
     >
       <AntApp>

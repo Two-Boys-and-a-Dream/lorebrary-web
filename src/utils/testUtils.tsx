@@ -37,31 +37,47 @@ export const renderWithProviders = (
  */
 export const cleanupToasts = () => {
   act(() => {
-    // Close all modal close buttons
-    const modalCloseButtons = document.querySelectorAll(
-      '.ant-modal-close, .ant-modal-close-x'
-    )
-    modalCloseButtons.forEach((button) => {
-      if (button instanceof HTMLElement) {
-        button.click()
-      }
-    })
+    try {
+      // Close all modal close buttons
+      const modalCloseButtons = document.querySelectorAll(
+        '.ant-modal-close, .ant-modal-close-x'
+      )
+      modalCloseButtons.forEach((button) => {
+        if (button instanceof HTMLElement) {
+          button.click()
+        }
+      })
 
-    // Remove all Ant Design message/notification elements from the DOM
-    const messages = document.querySelectorAll(
-      '.ant-message, .ant-notification, [role="alert"]'
-    )
-    messages.forEach((message) => {
-      message.remove()
-    })
+      // Remove all Ant Design message/notification elements from the DOM
+      const messages = document.querySelectorAll(
+        '.ant-message, .ant-notification, [role="alert"]'
+      )
+      messages.forEach((message) => {
+        try {
+          if (message.parentNode) {
+            message.parentNode.removeChild(message)
+          }
+        } catch {
+          // Ignore removal errors
+        }
+      })
 
-    // Also remove any message/notification containers from the DOM
-    const containers = document.querySelectorAll(
-      '.ant-message-notice, .ant-notification-notice'
-    )
-    containers.forEach((container) => {
-      container.remove()
-    })
+      // Also remove any message/notification containers from the DOM
+      const containers = document.querySelectorAll(
+        '.ant-message-notice, .ant-notification-notice'
+      )
+      containers.forEach((container) => {
+        try {
+          if (container.parentNode) {
+            container.parentNode.removeChild(container)
+          }
+        } catch {
+          // Ignore removal errors
+        }
+      })
+    } catch {
+      // Ignore any cleanup errors
+    }
   })
 }
 

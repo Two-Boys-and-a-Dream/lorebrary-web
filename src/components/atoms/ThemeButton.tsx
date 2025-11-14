@@ -6,7 +6,10 @@ interface ThemeButtonProps {
   toggleTheme: () => void
 }
 
-export default function ThemeButton({ darkMode, toggleTheme }: ThemeButtonProps) {
+export default function ThemeButton({
+  darkMode,
+  toggleTheme,
+}: ThemeButtonProps) {
   return (
     <Button
       onClick={toggleTheme}

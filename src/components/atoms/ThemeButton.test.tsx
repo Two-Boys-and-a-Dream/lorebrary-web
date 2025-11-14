@@ -7,14 +7,14 @@ describe('ThemeButton', () => {
   const mockToggleTheme = jest.fn()
 
   test('renders successfully', () => {
-    renderWithProviders(<ThemeButton darkMode={true} toggleTheme={mockToggleTheme} />)
+    renderWithProviders(<ThemeButton darkMode toggleTheme={mockToggleTheme} />)
 
     const button = screen.getByRole('button', { name: /toggle color mode/i })
     expect(button).toBeInTheDocument()
   })
 
   test('has correct aria-label', () => {
-    renderWithProviders(<ThemeButton darkMode={true} toggleTheme={mockToggleTheme} />)
+    renderWithProviders(<ThemeButton darkMode toggleTheme={mockToggleTheme} />)
 
     const button = screen.getByRole('button', { name: /toggle color mode/i })
     expect(button).toHaveAttribute('aria-label', 'Toggle color mode')
@@ -23,7 +23,7 @@ describe('ThemeButton', () => {
   test('toggles color mode when clicked', async () => {
     const user = userEvent.setup()
     const toggleFn = jest.fn()
-    renderWithProviders(<ThemeButton darkMode={true} toggleTheme={toggleFn} />)
+    renderWithProviders(<ThemeButton darkMode toggleTheme={toggleFn} />)
 
     const button = screen.getByRole('button', { name: /toggle color mode/i })
 
@@ -36,7 +36,7 @@ describe('ThemeButton', () => {
 
   test('is clickable', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<ThemeButton darkMode={true} toggleTheme={mockToggleTheme} />)
+    renderWithProviders(<ThemeButton darkMode toggleTheme={mockToggleTheme} />)
 
     const button = screen.getByRole('button', { name: /toggle color mode/i })
 

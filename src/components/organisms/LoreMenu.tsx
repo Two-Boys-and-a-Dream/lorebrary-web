@@ -1,6 +1,5 @@
 import { MenuOutlined } from '@ant-design/icons'
-import { Dropdown, Button } from 'antd'
-import type { MenuProps } from 'antd'
+import { Dropdown, Button, type MenuProps } from 'antd'
 import DeleteLoreMenuItem from './DeleteLoreMenuItem'
 import UpdateLoreMenuItem from './UpdateLoreMenuItem'
 
