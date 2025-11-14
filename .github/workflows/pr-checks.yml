@@ -10,7 +10,7 @@ jobs:
   Test_And_Audit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -25,14 +25,8 @@ jobs:
       - name: Audit
         run: npm audit --audit-level=high
 
-      - name: Formatting
-        run: npm run pretty-check
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Test
-        run: npm run test
+      - name: Verify
+        run: npm run verify
 
       - name: Build
         run: npm run build

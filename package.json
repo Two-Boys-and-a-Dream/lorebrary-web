@@ -13,7 +13,9 @@
     "lint": "eslint .",
     "pretty": "prettier --write .",
     "pretty-check": "prettier --check .",
-    "prepare": "npx simple-git-hooks"
+    "prepare": "npx simple-git-hooks",
+    "ts:check": "tsc --noEmit",
+    "verify": "npm run pretty-check && npm run lint && npm run ts:check && npm test"
   },
   "repository": {
     "type": "git",
