@@ -13,6 +13,7 @@ import {
   Flex,
   Textarea,
   useToast,
+  FormLabel,
 } from '@chakra-ui/react'
 import { loreFieldsArr } from '../../utils/constants'
 import type { FormData } from '../../utils/utils'
@@ -153,7 +154,7 @@ function LoreFormModal({
               const label = field.charAt(0).toUpperCase() + field.slice(1)
               return (
                 <Flex key={field} direction="column">
-                  <Text mb={1}>{label}</Text>
+                  <FormLabel mb={1}>{label}</FormLabel>
                   <Component
                     name={field}
                     value={formData[field].value}
