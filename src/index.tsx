@@ -5,6 +5,8 @@ import { theme } from './theme'
 import { ColorModeScript } from '@chakra-ui/react'
 
 const container = document.getElementById('app')
+if (!container) throw new Error('Root element not found')
+
 const root = createRoot(container)
 
 root.render(

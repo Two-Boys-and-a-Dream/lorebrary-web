@@ -5,9 +5,13 @@ import { AlertPopup } from '../molecules'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { API } from '../../api'
 
-export default function DeleteLoreMenuItem({ _id }) {
+interface DeleteLoreMenuItemProps {
+  _id?: string
+}
+
+export default function DeleteLoreMenuItem({ _id }: DeleteLoreMenuItemProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const cancelRef = React.useRef()
+  const cancelRef = React.useRef<HTMLButtonElement>(null)
 
   /**
    * Query/Mutation stuff
@@ -15,11 +19,11 @@ export default function DeleteLoreMenuItem({ _id }) {
   const toast = useToast()
   const queryClient = useQueryClient()
   const mutation = useMutation({
-    mutationFn: () => API.deleteLore(_id),
-    onError: (error) => {
+    mutationFn: () => API.deleteLore(_id!),
+    onError: (error: unknown) => {
       toast({
         title: 'Network error',
-        description: error,
+        description: typeof error === 'string' ? error : 'An error occurred',
         status: 'error',
       })
     },

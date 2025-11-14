@@ -19,10 +19,15 @@ import { DateTime } from 'luxon'
 import { LoreMenu } from '../organisms'
 import { API } from '../../api'
 
-export default function LoreItem({ isLoaded, _id }) {
+interface LoreItemProps {
+  isLoaded: boolean
+  _id?: string
+}
+
+export default function LoreItem({ isLoaded, _id }: LoreItemProps) {
   const { data } = useQuery({
     queryKey: ['lore', _id],
-    queryFn: () => API.getLoreById(_id),
+    queryFn: () => API.getLoreById(_id!),
     enabled: Boolean(_id),
   })
   const { title, subtitle, game, createdAt, text } = data || {}
@@ -59,7 +64,8 @@ export default function LoreItem({ isLoaded, _id }) {
               </h2>
               <AccordionPanel pb={4}>
                 <Text>
-                  Date: {DateTime.fromISO(createdAt).toLocaleString()}
+                  Date:{' '}
+                  {createdAt && DateTime.fromISO(createdAt).toLocaleString()}
                 </Text>
                 <Text>Game: {game}</Text>
                 <Text>Info: {subtitle}</Text>
