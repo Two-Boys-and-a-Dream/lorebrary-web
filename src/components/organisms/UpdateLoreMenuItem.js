@@ -10,7 +10,7 @@ export default function UpdateLoreMenuItem({ _id }) {
   const { data } = useQuery({
     queryKey: ['lore', _id],
     queryFn: () => API.getLoreById(_id),
-    enabled: !!_id,
+    enabled: Boolean(_id),
   })
 
   /**
@@ -48,6 +48,7 @@ export default function UpdateLoreMenuItem({ _id }) {
         Update
       </MenuItem>
       <LoreFormModal
+        key={isOpen ? _id : 'closed'}
         _id={_id}
         initialFormData={existingData}
         mutation={mutation}

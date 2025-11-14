@@ -23,7 +23,7 @@ export default function LoreItem({ isLoaded, _id }) {
   const { data } = useQuery({
     queryKey: ['lore', _id],
     queryFn: () => API.getLoreById(_id),
-    enabled: !!_id,
+    enabled: Boolean(_id),
   })
   const { title, subtitle, game, createdAt, text } = data || {}
 

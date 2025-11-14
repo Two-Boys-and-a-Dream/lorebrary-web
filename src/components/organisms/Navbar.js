@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import {
   Flex,
   IconButton,
@@ -49,7 +48,7 @@ export default function Navbar() {
     theme.colors.gray[500]
   )
   const bgColor = useColorModeValue(theme.colors.white, theme.colors.gray[800])
-  const initialFormData = useMemo(() => buildInitialFormData(), [])
+  const initialFormData = buildInitialFormData()
 
   return (
     <>
@@ -68,6 +67,7 @@ export default function Navbar() {
         <ThemeButton />
       </Flex>
       <LoreFormModal
+        key={isOpen ? 'create-open' : 'create-closed'}
         initialFormData={initialFormData}
         mutation={mutation}
         isOpen={isOpen}

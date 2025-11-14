@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import {
   Button,
   Modal,
@@ -19,17 +19,6 @@ import { loreFieldsArr } from '../../utils/constants'
 function LoreFormModal({ isOpen, onClose, initialFormData, mutation, _id }) {
   const [formData, setFormData] = useState(initialFormData)
   const toast = useToast()
-
-  /**
-   * Handles bug when you update lore
-   * Then re-open the update modal for same lore
-   * The initial values update properly
-   */
-  useEffect(() => {
-    if (isOpen) {
-      setFormData(initialFormData)
-    }
-  }, [isOpen])
 
   /**
    * Updates state value for specific field
@@ -101,7 +90,6 @@ function LoreFormModal({ isOpen, onClose, initialFormData, mutation, _id }) {
 
     // Check each object in formData to determine if any fields
     // are invalid.
-    // eslint-disable-next-line no-unused-vars
     for (const [_key, v] of Object.entries(clonedFormData)) {
       // Check for validation error
       const isError = validateString(v.value)
