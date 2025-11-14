@@ -1,44 +1,38 @@
 name: PR Checks
 on:
-    pull_request:
-        branches:
-            - main
-    # allows you to manually trigger this in GH actions
-    workflow_dispatch:
-
-env:
-    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  pull_request:
+    branches:
+      - main
+  # allows you to manually trigger this in GH actions
+  workflow_dispatch:
 
 jobs:
-    Test_And_Audit:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
-              with:
-                  fetch-depth: 0
+  Test_And_Audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-            - name: Setup Node 16.x
-              uses: actions/setup-node@v3
-              with:
-                  node-version: 16.x
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
 
-            - name: Install Packages
-              run: npm ci --ignore-scripts
+      - name: Install Packages
+        run: npm ci --ignore-scripts
 
-            - name: Audit
-              run: npm audit --audit-level=high
+      - name: Audit
+        run: npm audit --audit-level=high
 
-            - name: Formatting
-              run: npm run pretty-check
+      - name: Formatting
+        run: npm run pretty-check
 
-            - name: Lint
-              run: npm run lint
+      - name: Lint
+        run: npm run lint
 
-            - name: Test
-              run: npm run test
+      - name: Test
+        run: npm run test
 
-            - name: SonarCloud Scan
-              uses: SonarSource/sonarcloud-github-action@master
-
-            - name: Build
-              run: npm run build
+      - name: Build
+        run: npm run build

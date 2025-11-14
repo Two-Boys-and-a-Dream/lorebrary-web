@@ -8,20 +8,20 @@ import UpdateLoreMenuItem from './UpdateLoreMenuItem'
  * Update/Delete functionality
  */
 function LoreMenu({ _id }) {
-    return (
-        <Menu>
-            <MenuButton
-                as={IconButton}
-                icon={<HamburgerIcon />}
-                aria-label="Options"
-                variant="ghost"
-            />
-            <MenuList>
-                <UpdateLoreMenuItem _id={_id} />
-                <DeleteLoreMenuItem _id={_id} />
-            </MenuList>
-        </Menu>
-    )
+  return (
+    <Menu>
+      <MenuButton
+        as={IconButton}
+        icon={<HamburgerIcon />}
+        aria-label="Options"
+        variant="ghost"
+      />
+      <MenuList>
+        <UpdateLoreMenuItem _id={_id} />
+        <DeleteLoreMenuItem _id={_id} />
+      </MenuList>
+    </Menu>
+  )
 }
 
 export default LoreMenu
