@@ -14,10 +14,10 @@ import {
   AccordionPanel,
   Box,
 } from '@chakra-ui/react'
-import { useQuery } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 import { DateTime } from 'luxon'
 import { LoreMenu } from '../organisms'
-import { API } from '../../api'
+import type { Lore } from '../../api'
 
 interface LoreItemProps {
   isLoaded: boolean
@@ -25,11 +25,8 @@ interface LoreItemProps {
 }
 
 export default function LoreItem({ isLoaded, _id }: LoreItemProps) {
-  const { data } = useQuery({
-    queryKey: ['lore', _id],
-    queryFn: () => API.getLoreById(_id!),
-    enabled: Boolean(_id),
-  })
+  const queryClient = useQueryClient()
+  const data = queryClient.getQueryData<Lore>(['lore', _id])
   const { title, subtitle, game, createdAt, text } = data || {}
 
   return (

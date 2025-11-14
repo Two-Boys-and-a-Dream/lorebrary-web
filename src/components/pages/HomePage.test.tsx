@@ -9,7 +9,6 @@ import { theme } from '../../theme'
 jest.mock('../../api', () => ({
   API: {
     getAllLore: jest.fn(),
-    getLoreById: jest.fn(),
     updateLore: jest.fn(),
     deleteLore: jest.fn(),
   },
@@ -90,14 +89,8 @@ describe('HomePage Component', () => {
     const mockGetAllLore = API.getAllLore as jest.MockedFunction<
       typeof API.getAllLore
     >
-    const mockGetLoreById = API.getLoreById as jest.MockedFunction<
-      typeof API.getLoreById
-    >
 
     mockGetAllLore.mockResolvedValue(mockLoreData)
-    mockGetLoreById.mockImplementation((id: string) => {
-      return Promise.resolve(mockLoreData.find((lore) => lore._id === id)!)
-    })
 
     renderHomePage()
 

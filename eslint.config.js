@@ -6,6 +6,7 @@ import jsxA11y from 'eslint-plugin-jsx-a11y'
 import tanstackQuery from '@tanstack/eslint-plugin-query'
 import jest from 'eslint-plugin-jest'
 import testingLibrary from 'eslint-plugin-testing-library'
+import jestDom from 'eslint-plugin-jest-dom'
 import prettier from 'eslint-config-prettier'
 import globals from 'globals'
 
@@ -147,6 +148,7 @@ export default [
     plugins: {
       jest,
       'testing-library': testingLibrary,
+      'jest-dom': jestDom,
     },
     languageOptions: {
       globals: {
@@ -156,6 +158,7 @@ export default [
     rules: {
       ...jest.configs.recommended.rules,
       ...testingLibrary.configs.react.rules,
+      ...jestDom.configs.recommended.rules,
     },
   },
 
