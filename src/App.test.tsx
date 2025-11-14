@@ -280,8 +280,9 @@ describe('App Component - Full User Interaction Flows', () => {
       })
 
       // Verify fields are pre-filled
+      // Note: First displayed item is mockLoreData[1] due to sorting by createdAt
       const titleInput = getInputByName('title')
-      expect(titleInput).toHaveValue(mockLoreData[0].title)
+      expect(titleInput).toHaveValue(mockLoreData[1].title)
 
       // Modify the title
       await user.clear(titleInput)
@@ -295,7 +296,7 @@ describe('App Component - Full User Interaction Flows', () => {
       await waitFor(() => {
         expect(mockUpdateLore).toHaveBeenCalledWith(
           expect.objectContaining({
-            _id: mockLoreData[0]._id,
+            _id: mockLoreData[1]._id,
             title: 'Updated Quest Title',
           })
         )
@@ -354,8 +355,9 @@ describe('App Component - Full User Interaction Flows', () => {
       await user.click(confirmButton)
 
       // Verify API was called
+      // Note: First displayed item is mockLoreData[1] due to sorting by createdAt
       await waitFor(() => {
-        expect(mockDeleteLore).toHaveBeenCalledWith(mockLoreData[0]._id)
+        expect(mockDeleteLore).toHaveBeenCalledWith(mockLoreData[1]._id)
       })
 
       // Success toast should appear
