@@ -16,13 +16,4 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 })
 
-// // Mock IntersectionObserver for Chakra UI components that might use it
-// global.IntersectionObserver = class IntersectionObserver {
-//   constructor() {}
-//   disconnect() {}
-//   observe() {}
-//   takeRecords() {
-//     return []
-//   }
-//   unobserve() {}
-// }
+jest.useFakeTimers({ advanceTimers: true })
