@@ -2,14 +2,19 @@ import { MenuItem, useDisclosure, useToast } from '@chakra-ui/react'
 import { EditIcon } from '@chakra-ui/icons'
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query'
 import { API } from '../../api'
+import type { Lore } from '../../api'
 import LoreFormModal from './LoreFormModal'
 import { buildInitialFormData } from '../../utils/utils'
 
-export default function UpdateLoreMenuItem({ _id }) {
+interface UpdateLoreMenuItemProps {
+  _id?: string
+}
+
+export default function UpdateLoreMenuItem({ _id }: UpdateLoreMenuItemProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { data } = useQuery({
     queryKey: ['lore', _id],
-    queryFn: () => API.getLoreById(_id),
+    queryFn: () => API.getLoreById(_id!),
     enabled: Boolean(_id),
   })
 
@@ -19,11 +24,11 @@ export default function UpdateLoreMenuItem({ _id }) {
   const toast = useToast()
   const queryClient = useQueryClient()
   const mutation = useMutation({
-    mutationFn: async (newLore) => API.updateLore(newLore),
-    onError: (error) =>
+    mutationFn: async (newLore: Lore) => API.updateLore(newLore),
+    onError: (error: unknown) =>
       toast({
         title: 'Network error',
-        description: error,
+        description: typeof error === 'string' ? error : 'An error occurred',
         status: 'error',
       }),
     onSuccess: async () => {

@@ -7,6 +7,17 @@ import {
   AlertDialogFooter,
   Button,
 } from '@chakra-ui/react'
+import type { RefObject } from 'react'
+
+interface AlertPopupProps {
+  onConfirm: () => void
+  isOpen: boolean
+  onClose: () => void
+  cancelRef: RefObject<any>
+  headerText: string
+  bodyText: string
+  actionText?: string
+}
 
 /**
  * Styled Alert popup. Use `useDisclosure` in parent component
@@ -20,7 +31,7 @@ export default function AlertPopup({
   headerText,
   bodyText,
   actionText = 'Delete',
-}) {
+}: AlertPopupProps) {
   return (
     <AlertDialog
       isOpen={isOpen}

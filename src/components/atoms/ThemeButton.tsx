@@ -6,6 +6,7 @@ export default function ThemeButton() {
   const props = {
     onClick: toggleColorMode,
     icon: colorMode === 'light' ? <MoonIcon /> : <SunIcon />,
+    'aria-label': 'Toggle color mode',
   }
 
   return <IconButton {...props} />

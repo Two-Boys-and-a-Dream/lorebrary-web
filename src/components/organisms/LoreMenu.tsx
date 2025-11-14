@@ -3,11 +3,15 @@ import { Menu, MenuButton, IconButton, MenuList } from '@chakra-ui/react'
 import DeleteLoreMenuItem from './DeleteLoreMenuItem'
 import UpdateLoreMenuItem from './UpdateLoreMenuItem'
 
+interface LoreMenuProps {
+  _id?: string
+}
+
 /**
  * Hamburger menu on each LoreItem that gives
  * Update/Delete functionality
  */
-function LoreMenu({ _id }) {
+function LoreMenu({ _id }: LoreMenuProps) {
   return (
     <Menu>
       <MenuButton

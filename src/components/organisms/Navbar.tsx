@@ -10,6 +10,7 @@ import { ThemeButton } from '../atoms'
 import LoreFormModal from './LoreFormModal'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { API } from '../../api'
+import type { NewLore } from '../../api'
 import { AddIcon } from '@chakra-ui/icons'
 import { buildInitialFormData } from '../../utils/utils'
 
@@ -22,11 +23,11 @@ export default function Navbar() {
    * Mutation for lore form submission
    */
   const mutation = useMutation({
-    mutationFn: async (newLore) => API.createLore(newLore),
-    onError: (error) =>
+    mutationFn: async (newLore: NewLore) => API.createLore(newLore),
+    onError: (error: unknown) =>
       toast({
         title: 'Network error',
-        description: error,
+        description: typeof error === 'string' ? error : 'An error occurred',
         status: 'error',
       }),
     onSuccess: async () => {
@@ -63,7 +64,7 @@ export default function Navbar() {
         zIndex={2}
         top={0}
       >
-        <IconButton onClick={onOpen} icon={<AddIcon />} />
+        <IconButton onClick={onOpen} icon={<AddIcon />} aria-label="Add lore" />
         <ThemeButton />
       </Flex>
       <LoreFormModal

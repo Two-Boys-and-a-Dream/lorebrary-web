@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { ChangeEvent } from 'react'
 import {
   Button,
   Modal,
@@ -15,15 +16,33 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import { loreFieldsArr } from '../../utils/constants'
+import type { FormData } from '../../utils/utils'
+import type { UseMutationResult } from '@tanstack/react-query'
+import type { Lore, NewLore } from '../../api'
 
-function LoreFormModal({ isOpen, onClose, initialFormData, mutation, _id }) {
+interface LoreFormModalProps {
+  isOpen: boolean
+  onClose: () => void
+  initialFormData: FormData
+  mutation: UseMutationResult<Lore, unknown, any, unknown>
+  _id?: string
+  onOpen?: () => void
+}
+
+function LoreFormModal({
+  isOpen,
+  onClose,
+  initialFormData,
+  mutation,
+  _id,
+}: LoreFormModalProps) {
   const [formData, setFormData] = useState(initialFormData)
   const toast = useToast()
 
   /**
    * Updates state value for specific field
    */
-  function onChange(e) {
+  function onChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { value, name } = e.target
 
     setFormData({
@@ -57,13 +76,13 @@ function LoreFormModal({ isOpen, onClose, initialFormData, mutation, _id }) {
     const newLore = loreFieldsArr.reduce(
       (o, key) => ({
         ...o,
-        _id,
+        ...(_id && { _id }),
         [key]: formData[key].value,
       }),
-      {}
+      {} as Lore | NewLore
     )
     try {
-      await mutation.mutateAsync(newLore)
+      await mutation.mutateAsync(newLore as any)
       // As long as the mutation succeeds, clear the form data
       setFormData(initialFormData)
     } catch (_error) {
@@ -73,18 +92,16 @@ function LoreFormModal({ isOpen, onClose, initialFormData, mutation, _id }) {
 
   /**
    * Returns true for error, false otherwise
-   * @returns {Boolean}
    */
-  function validateString(value) {
+  function validateString(value: string): boolean {
     return !value
   }
 
   /**
    * Validates all formData. First implementation just checks
    * That each field has __something__ in the string.
-   * @returns {Boolean}
    */
-  function validateForm() {
+  function validateForm(): boolean {
     const clonedFormData = { ...formData }
     let valid = true
 
@@ -151,7 +168,7 @@ function LoreFormModal({ isOpen, onClose, initialFormData, mutation, _id }) {
           <Button
             colorScheme="green"
             onClick={onSubmit}
-            isLoading={mutation.isLoading}
+            isLoading={mutation.isPending}
             loadingText={_id ? 'Updating' : 'Creating'}
           >
             {_id ? 'Update' : 'Create'}
