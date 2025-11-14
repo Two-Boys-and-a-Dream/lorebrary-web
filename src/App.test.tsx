@@ -15,7 +15,6 @@ import userEvent from '@testing-library/user-event'
 import { App } from './App'
 import { API, type Lore, type NewLore } from './api'
 import { mockLoreData } from './utils/testData'
-import { cleanupToasts } from './utils/testUtils'
 
 // Mock the API module
 jest.mock('./api')
@@ -30,11 +29,6 @@ const getInputByName = (name: string) => {
 }
 
 describe('App Component - Full User Interaction Flows', () => {
-  // Cleanup toasts between tests to prevent interference
-  afterEach(() => {
-    cleanupToasts()
-  })
-
   // Reset mock implementations before each test
   beforeEach(() => {
     // Reset getAllLore to return mockLoreData by default

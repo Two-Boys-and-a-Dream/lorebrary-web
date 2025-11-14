@@ -1,4 +1,4 @@
-import { render, type RenderOptions, act } from '@testing-library/react'
+import { render, type RenderOptions } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ConfigProvider } from 'antd'
 import { purpleTheme } from '../theme/theme'
@@ -27,60 +27,6 @@ export const renderWithProviders = (
     </QueryClientProvider>,
     options
   )
-}
-
-/**
- * Cleanup function to close all Ant Design toasts and modals between tests
- * Call this in afterEach to ensure UI elements don't persist between tests
- */
-export const cleanupToasts = () => {
-  act(() => {
-    try {
-      // Remove all Ant Design modals from the DOM
-      const modals = document.querySelectorAll(
-        '.ant-modal-root, .ant-modal-wrap'
-      )
-      modals.forEach((modal) => {
-        try {
-          if (modal.parentNode) {
-            modal.parentNode.removeChild(modal)
-          }
-        } catch {
-          // Ignore removal errors
-        }
-      })
-
-      // Remove all Ant Design message/notification elements from the DOM
-      const messages = document.querySelectorAll(
-        '.ant-message, .ant-notification, [role="alert"]'
-      )
-      messages.forEach((message) => {
-        try {
-          if (message.parentNode) {
-            message.parentNode.removeChild(message)
-          }
-        } catch {
-          // Ignore removal errors
-        }
-      })
-
-      // Also remove any message/notification containers from the DOM
-      const containers = document.querySelectorAll(
-        '.ant-message-notice, .ant-notification-notice'
-      )
-      containers.forEach((container) => {
-        try {
-          if (container.parentNode) {
-            container.parentNode.removeChild(container)
-          }
-        } catch {
-          // Ignore removal errors
-        }
-      })
-    } catch {
-      // Ignore any cleanup errors
-    }
-  })
 }
 
 // Re-export everything from testing-library

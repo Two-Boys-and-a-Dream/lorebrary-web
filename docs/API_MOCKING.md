@@ -27,12 +27,9 @@ import MyComponent from './MyComponent'
 jest.mock('../../api')
 
 describe('MyComponent', () => {
-  beforeEach(() => {
-    // Clear mock call history before each test
-    jest.clearAllMocks()
-  })
+  // NO jest.clearAllMocks() needed - automatic via jest.config.js
 
-  test('fetches and displays lore data', async () => {
+  test('fetches and displays data', async () => {
     renderWithProviders(<MyComponent />)
 
     // Wait for data to load
@@ -106,7 +103,7 @@ You can extend or modify the test data in `src/utils/testData.ts` as needed.
 
 ### renderWithProviders
 
-A custom render function that wraps components with all necessary providers (QueryClient, ChakraProvider):
+A custom render function that wraps components with all necessary providers (QueryClient, ConfigProvider):
 
 ```typescript
 import { renderWithProviders } from '../../utils/testUtils'
@@ -121,12 +118,12 @@ This function:
 
 - Creates a new QueryClient for each test (ensures isolation)
 - Disables retries for faster test failures
-- Wraps your component with QueryClientProvider and ChakraProvider
+- Wraps your component with QueryClientProvider and ConfigProvider (Ant Design)
 - Uses your custom theme automatically
 
 ## Best Practices
 
-1. **Always clear mocks** - Use `jest.clearAllMocks()` in `beforeEach()` to reset call counts
+1. **Don't clear mocks manually** - `jest.clearMocks: true` in config handles this automatically
 2. **Use renderWithProviders** - Always render components with `renderWithProviders` instead of plain `render`
 3. **Be specific** - Override mock behavior only for tests that need different responses
 4. **Use TypeScript** - Cast mocks with `as jest.MockedFunction<>` for type safety
