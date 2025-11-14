@@ -11,6 +11,7 @@ interface DeleteLoreMenuItemProps {
 
 export default function DeleteLoreMenuItem({ _id }: DeleteLoreMenuItemProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [messageApi, contextHolder] = message.useMessage()
 
   const onOpen = () => setIsOpen(true)
   const onClose = () => setIsOpen(false)
@@ -22,10 +23,10 @@ export default function DeleteLoreMenuItem({ _id }: DeleteLoreMenuItemProps) {
   const mutation = useMutation({
     mutationFn: () => API.deleteLore(_id!),
     onError: (error: unknown) => {
-      message.error(typeof error === 'string' ? error : 'An error occurred')
+      messageApi.error(typeof error === 'string' ? error : 'An error occurred')
     },
     onSuccess: async () => {
-      message.success('Lore deleted!')
+      messageApi.success('Lore deleted!')
       await queryClient.invalidateQueries({
         queryKey: ['lore'],
         exact: true,
@@ -38,6 +39,7 @@ export default function DeleteLoreMenuItem({ _id }: DeleteLoreMenuItemProps) {
 
   return (
     <>
+      {contextHolder}
       <span
         onClick={onOpen}
         onKeyDown={(e) => {

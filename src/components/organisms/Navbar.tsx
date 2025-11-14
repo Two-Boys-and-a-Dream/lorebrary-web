@@ -15,6 +15,8 @@ interface NavbarProps {
 
 export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [messageApi, contextHolder] = message.useMessage()
+
   const queryClient = useQueryClient()
 
   const onOpen = () => setIsOpen(true)
@@ -26,10 +28,10 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
   const mutation = useMutation({
     mutationFn: async (newLore: NewLore) => API.createLore(newLore),
     onError: (error: unknown) => {
-      message.error(typeof error === 'string' ? error : 'An error occurred')
+      messageApi.error(typeof error === 'string' ? error : 'An error occurred')
     },
     onSuccess: async () => {
-      message.success('Lore created!')
+      messageApi.success('Lore created!')
       await queryClient.invalidateQueries({
         queryKey: ['lore'],
         exact: true,
@@ -42,6 +44,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
 
   return (
     <>
+      {contextHolder}
       <Flex
         style={{
           padding: '20px',

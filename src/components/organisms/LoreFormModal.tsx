@@ -27,6 +27,7 @@ function LoreFormModal({
   _id,
 }: LoreFormModalProps) {
   const [formData, setFormData] = useState(initialFormData)
+  const [messageApi, contextHolder] = message.useMessage()
 
   /**
    * Updates state value for specific field
@@ -52,7 +53,7 @@ function LoreFormModal({
     // First validate form,
     // if invalid set error states for inputs and bail early.
     if (!validateForm()) {
-      message.error('Please fill out all fields.')
+      messageApi.error('Please fill out all fields.')
       return
     }
 
@@ -116,48 +117,51 @@ function LoreFormModal({
   }
 
   return (
-    <Modal
-      open={isOpen}
-      onCancel={handleClose}
-      centered
-      maskClosable={false}
-      width={800}
-      title={`${_id ? 'Update' : 'Create'} Lore`}
-      footer={[
-        <Button
-          key="submit"
-          type="primary"
-          onClick={onSubmit}
-          loading={mutation.isPending}
-        >
-          {_id ? 'Update' : 'Create'}
-        </Button>,
-      ]}
-    >
-      <Flex vertical gap={20}>
-        <Text style={{ fontSize: '18px' }}>
-          Let&apos;s hear about that juicy new new
-        </Text>
-        {loreFieldsArr.map((field) => {
-          // Assign component depending on field.
-          // They all share same props anyways.
-          const Component = field === 'text' ? TextArea : Input
-          const label = field.charAt(0).toUpperCase() + field.slice(1)
-          return (
-            <Flex key={field} vertical>
-              <Text style={{ marginBottom: 4 }}>{label}</Text>
-              <Component
-                name={field}
-                value={formData[field].value}
-                onChange={onChange}
-                status={formData[field].error ? 'error' : ''}
-                rows={field === 'text' ? 4 : undefined}
-              />
-            </Flex>
-          )
-        })}
-      </Flex>
-    </Modal>
+    <>
+      {contextHolder}
+      <Modal
+        open={isOpen}
+        onCancel={handleClose}
+        centered
+        maskClosable={false}
+        width={800}
+        title={`${_id ? 'Update' : 'Create'} Lore`}
+        footer={[
+          <Button
+            key="submit"
+            type="primary"
+            onClick={onSubmit}
+            loading={mutation.isPending}
+          >
+            {_id ? 'Update' : 'Create'}
+          </Button>,
+        ]}
+      >
+        <Flex vertical gap={20}>
+          <Text style={{ fontSize: '18px' }}>
+            Let&apos;s hear about that juicy new new
+          </Text>
+          {loreFieldsArr.map((field) => {
+            // Assign component depending on field.
+            // They all share same props anyways.
+            const Component = field === 'text' ? TextArea : Input
+            const label = field.charAt(0).toUpperCase() + field.slice(1)
+            return (
+              <Flex key={field} vertical>
+                <Text style={{ marginBottom: 4 }}>{label}</Text>
+                <Component
+                  name={field}
+                  value={formData[field].value}
+                  onChange={onChange}
+                  status={formData[field].error ? 'error' : ''}
+                  rows={field === 'text' ? 4 : undefined}
+                />
+              </Flex>
+            )
+          })}
+        </Flex>
+      </Modal>
+    </>
   )
 }
 
