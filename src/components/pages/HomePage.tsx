@@ -3,11 +3,16 @@ import { Flex, Text, theme } from '@chakra-ui/react'
 import { API, type Lore } from '../../api'
 import { LoreItem } from '../molecules'
 
-type LoreOrPlaceholder = Lore | { indexKey: number; _id: string }
+type LoreOrPlaceholder = Lore | Pick<Lore, '_id'>
 
 export default function HomePage() {
   const queryClient = useQueryClient()
-  const { data, isLoading, isFetched, error } = useQuery({
+  const {
+    data = [],
+    isLoading,
+    isFetched,
+    error,
+  } = useQuery({
     queryKey: ['lore'],
     queryFn: async () => {
       const lore = await API.getAllLore()
@@ -28,10 +33,9 @@ export default function HomePage() {
   // Create "fake" cards to render skeletons for while loading
   const loreData: LoreOrPlaceholder[] = !isFetched
     ? Array.from({ length: 20 }, (_v, i) => ({
-        indexKey: i,
         _id: String(i),
       }))
-    : data || []
+    : data.map((lore) => ({ _id: lore._id }))
 
   return (
     <Flex gap={theme.space[10]} wrap="wrap" justify="center">
