@@ -17,14 +17,22 @@ export default function HomePage() {
     queryFn: async () => {
       const lore = await API.getAllLore()
 
+      // Sort lore by createdAt date (newest first)
+      // Create a copy to avoid mutating the original array
+      const sortedLore = [...lore].sort((a, b) => {
+        const dateA = new Date(a.createdAt || 0).getTime()
+        const dateB = new Date(b.createdAt || 0).getTime()
+        return dateB - dateA
+      })
+
       /**
        * Set each individual lore in query cache by id
        */
-      lore.forEach((element) =>
+      sortedLore.forEach((element) =>
         queryClient.setQueryData(['lore', element._id], element)
       )
 
-      return lore
+      return sortedLore
     },
   })
   if (error) return <Text>{String(error)}</Text>
