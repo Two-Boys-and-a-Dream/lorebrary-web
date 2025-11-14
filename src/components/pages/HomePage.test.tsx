@@ -112,7 +112,7 @@ describe('HomePage Component', () => {
 
     // Get all lore card titles (filter out "Context" accordion headers)
     const loreTitles = screen
-      .getAllByRole('heading', { level: 2 })
+      .getAllByRole('heading', { level: 4 })
       .map((heading) => heading.textContent)
       .filter((text) => text !== 'Context' && text !== '')
 
@@ -172,7 +172,7 @@ describe('HomePage Component', () => {
 
     // Items without dates should be sorted to the end (treated as epoch 0)
     const loreTitles = screen
-      .getAllByRole('heading', { level: 2 })
+      .getAllByRole('heading', { level: 4 })
       .map((heading) => heading.textContent)
       .filter((text) => text !== 'Context' && text !== '')
 

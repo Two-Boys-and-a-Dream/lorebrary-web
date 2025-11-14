@@ -1,5 +1,6 @@
-import { HamburgerIcon } from '@chakra-ui/icons'
-import { Menu, MenuButton, IconButton, MenuList } from '@chakra-ui/react'
+import { MenuOutlined } from '@ant-design/icons'
+import { Dropdown, Button } from 'antd'
+import type { MenuProps } from 'antd'
 import DeleteLoreMenuItem from './DeleteLoreMenuItem'
 import UpdateLoreMenuItem from './UpdateLoreMenuItem'
 
@@ -12,19 +13,21 @@ interface LoreMenuProps {
  * Update/Delete functionality
  */
 function LoreMenu({ _id }: LoreMenuProps) {
+  const items: MenuProps['items'] = [
+    {
+      key: 'update',
+      label: <UpdateLoreMenuItem _id={_id} />,
+    },
+    {
+      key: 'delete',
+      label: <DeleteLoreMenuItem _id={_id} />,
+    },
+  ]
+
   return (
-    <Menu>
-      <MenuButton
-        as={IconButton}
-        icon={<HamburgerIcon />}
-        aria-label="Options"
-        variant="ghost"
-      />
-      <MenuList>
-        <UpdateLoreMenuItem _id={_id} />
-        <DeleteLoreMenuItem _id={_id} />
-      </MenuList>
-    </Menu>
+    <Dropdown menu={{ items }} trigger={['click']}>
+      <Button icon={<MenuOutlined />} type="text" aria-label="Options" />
+    </Dropdown>
   )
 }
 

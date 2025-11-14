@@ -1,7 +1,9 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { Flex, Text, theme } from '@chakra-ui/react'
+import { Flex, Typography } from 'antd'
 import { API, type Lore } from '../../api'
 import { LoreItem } from '../molecules'
+
+const { Text } = Typography
 
 type LoreOrPlaceholder = Lore | Pick<Lore, '_id'>
 
@@ -45,7 +47,7 @@ export default function HomePage() {
     : data.map((lore) => ({ _id: lore._id }))
 
   return (
-    <Flex gap={theme.space[10]} wrap="wrap" justify="center">
+    <Flex gap={40} wrap justify="center">
       {loreData.map(({ _id }) => {
         return <LoreItem key={_id} _id={_id} isLoaded={!isLoading} />
       })}

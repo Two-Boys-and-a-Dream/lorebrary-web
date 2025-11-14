@@ -1,10 +1,9 @@
-import { extendTheme } from '@chakra-ui/react'
+import type { ThemeConfig } from 'antd'
 
-const config = {
-  initialColorMode: 'dark' as const,
-  useSystemColorMode: false,
+const theme: ThemeConfig = {
+  token: {
+    colorPrimary: '#1890ff',
+  },
 }
-
-const theme = extendTheme({ config })
 
 export default theme

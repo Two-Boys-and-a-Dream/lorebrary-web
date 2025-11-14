@@ -25,12 +25,8 @@ describe('LoreMenu', () => {
     await user.click(menuButton)
 
     // Menu items should be visible
-    expect(
-      screen.getByRole('menuitem', { name: /update/i })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole('menuitem', { name: /delete/i })
-    ).toBeInTheDocument()
+    expect(screen.getByText(/^update$/i)).toBeInTheDocument()
+    expect(screen.getByText(/^delete$/i)).toBeInTheDocument()
   })
 
   test('shows update and delete menu items when opened', async () => {
@@ -40,8 +36,8 @@ describe('LoreMenu', () => {
     const menuButton = screen.getByRole('button', { name: /options/i })
     await user.click(menuButton)
 
-    const updateItem = screen.getByRole('menuitem', { name: /update/i })
-    const deleteItem = screen.getByRole('menuitem', { name: /delete/i })
+    const updateItem = screen.getByText(/^update$/i)
+    const deleteItem = screen.getByText(/^delete$/i)
 
     expect(updateItem).toBeInTheDocument()
     expect(deleteItem).toBeInTheDocument()
@@ -61,10 +57,10 @@ describe('LoreMenu', () => {
     const menuButton = screen.getByRole('button', { name: /options/i })
     await user.click(menuButton)
 
-    const deleteItem = screen.getByRole('menuitem', { name: /delete/i })
+    const deleteItem = screen.getByText(/^delete$/i)
     await user.click(deleteItem)
 
-    const confirmButton = await screen.findByRole('button', { name: /delete/i })
+    const confirmButton = await screen.findByRole('button', { name: /^delete$/i })
     await user.click(confirmButton)
 
     // Should call API with correct ID
@@ -104,11 +100,9 @@ describe('LoreMenu', () => {
       const deleteItem = screen.getByRole('menuitem', { name: /delete/i })
       await user.click(deleteItem)
 
-      // Menu should close (menu items no longer in document)
+      // Menu should close (confirmation dialog appears)
       await waitFor(() => {
-        expect(
-          screen.queryByRole('menuitem', { name: /delete/i })
-        ).not.toBeInTheDocument()
+        expect(screen.getByText(/delete lore/i)).toBeInTheDocument()
       })
     })
 
@@ -125,12 +119,12 @@ describe('LoreMenu', () => {
       const menuButton = screen.getByRole('button', { name: /options/i })
       await user.click(menuButton)
 
-      const deleteItem = screen.getByRole('menuitem', { name: /delete/i })
+      const deleteItem = screen.getByText(/^delete$/i)
       await user.click(deleteItem)
 
       // Confirm deletion in alert dialog
       const confirmButton = await screen.findByRole('button', {
-        name: /delete/i,
+        name: /^delete$/i,
       })
       await user.click(confirmButton)
 
@@ -158,7 +152,7 @@ describe('LoreMenu', () => {
       const menuButton = screen.getByRole('button', { name: /options/i })
       await user.click(menuButton)
 
-      const deleteItem = screen.getByRole('menuitem', { name: /delete/i })
+      const deleteItem = screen.getByText(/^delete$/i)
       await user.click(deleteItem)
 
       // Cancel deletion
@@ -189,18 +183,17 @@ describe('LoreMenu', () => {
       const menuButton = screen.getByRole('button', { name: /options/i })
       await user.click(menuButton)
 
-      const deleteItem = screen.getByRole('menuitem', { name: /delete/i })
+      const deleteItem = screen.getByText(/^delete$/i)
       await user.click(deleteItem)
 
       // Confirm deletion
       const confirmButton = await screen.findByRole('button', {
-        name: /delete/i,
+        name: /^delete$/i,
       })
       await user.click(confirmButton)
 
       // String error message should appear
       await waitFor(() => {
-        expect(screen.getByText(/network error/i)).toBeInTheDocument()
         expect(screen.getByText(/delete failed/i)).toBeInTheDocument()
       })
     })
@@ -218,18 +211,17 @@ describe('LoreMenu', () => {
       const menuButton = screen.getByRole('button', { name: /options/i })
       await user.click(menuButton)
 
-      const deleteItem = screen.getByRole('menuitem', { name: /delete/i })
+      const deleteItem = screen.getByText(/^delete$/i)
       await user.click(deleteItem)
 
       // Confirm deletion
       const confirmButton = await screen.findByRole('button', {
-        name: /delete/i,
+        name: /^delete$/i,
       })
       await user.click(confirmButton)
 
       // Generic error message should appear
       await waitFor(() => {
-        expect(screen.getByText(/network error/i)).toBeInTheDocument()
         expect(screen.getByText(/an error occurred/i)).toBeInTheDocument()
       })
     })
@@ -250,7 +242,7 @@ describe('LoreMenu', () => {
       await user.click(menuButton)
 
       // Click update
-      const updateItem = screen.getByRole('menuitem', { name: /update/i })
+      const updateItem = screen.getByText(/^update$/i)
       await user.click(updateItem)
 
       // Update modal should appear
@@ -272,7 +264,7 @@ describe('LoreMenu', () => {
       const menuButton = screen.getByRole('button', { name: /options/i })
       await user.click(menuButton)
 
-      const updateItem = screen.getByRole('menuitem', { name: /update/i })
+      const updateItem = screen.getByText(/^update$/i)
       await user.click(updateItem)
 
       // Fill the form to make it valid
@@ -286,7 +278,6 @@ describe('LoreMenu', () => {
 
       // Error message with string should appear
       await waitFor(() => {
-        expect(screen.getByText(/network error/i)).toBeInTheDocument()
         expect(screen.getByText(/update failed/i)).toBeInTheDocument()
       })
     })
@@ -303,7 +294,7 @@ describe('LoreMenu', () => {
       const menuButton = screen.getByRole('button', { name: /options/i })
       await user.click(menuButton)
 
-      const updateItem = screen.getByRole('menuitem', { name: /update/i })
+      const updateItem = screen.getByText(/^update$/i)
       await user.click(updateItem)
 
       // Fill the form to make it valid
@@ -317,7 +308,6 @@ describe('LoreMenu', () => {
 
       // Generic error message should appear
       await waitFor(() => {
-        expect(screen.getByText(/network error/i)).toBeInTheDocument()
         expect(screen.getByText(/an error occurred/i)).toBeInTheDocument()
       })
     })

@@ -1,13 +1,4 @@
-import {
-  AlertDialog,
-  AlertDialogOverlay,
-  AlertDialogBody,
-  AlertDialogHeader,
-  AlertDialogContent,
-  AlertDialogFooter,
-  Button,
-} from '@chakra-ui/react'
-import { useRef } from 'react'
+import { Modal, Button } from 'antd'
 
 interface AlertPopupProps {
   onConfirm: () => void
@@ -19,7 +10,7 @@ interface AlertPopupProps {
 }
 
 /**
- * Styled Alert popup. Use `useDisclosure` in parent component
+ * Styled Alert popup. Use useState in parent component
  * to manage the open/close state
  */
 export default function AlertPopup({
@@ -30,32 +21,21 @@ export default function AlertPopup({
   bodyText,
   actionText,
 }: AlertPopupProps) {
-  const cancelRef = useRef<HTMLButtonElement>(null!)
-
   return (
-    <AlertDialog
-      isOpen={isOpen}
-      leastDestructiveRef={cancelRef}
-      onClose={onClose}
+    <Modal
+      open={isOpen}
+      onCancel={onClose}
+      title={headerText}
+      footer={[
+        <Button key="cancel" onClick={onClose}>
+          Cancel
+        </Button>,
+        <Button key="confirm" danger type="primary" onClick={onConfirm}>
+          {actionText}
+        </Button>,
+      ]}
     >
-      <AlertDialogOverlay>
-        <AlertDialogContent>
-          <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            {headerText}
-          </AlertDialogHeader>
-
-          <AlertDialogBody>{bodyText}</AlertDialogBody>
-
-          <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={onClose}>
-              Cancel
-            </Button>
-            <Button colorScheme="red" onClick={onConfirm} ml={3}>
-              {actionText}
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialogOverlay>
-    </AlertDialog>
+      {bodyText}
+    </Modal>
   )
 }

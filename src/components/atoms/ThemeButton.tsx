@@ -1,13 +1,17 @@
-import { IconButton, useColorMode } from '@chakra-ui/react'
-import { SunIcon, MoonIcon } from '@chakra-ui/icons'
+import { Button } from 'antd'
+import { SunOutlined, MoonOutlined } from '@ant-design/icons'
 
-export default function ThemeButton() {
-  const { colorMode, toggleColorMode } = useColorMode()
-  const props = {
-    onClick: toggleColorMode,
-    icon: colorMode === 'light' ? <MoonIcon /> : <SunIcon />,
-    'aria-label': 'Toggle color mode',
-  }
+interface ThemeButtonProps {
+  darkMode: boolean
+  toggleTheme: () => void
+}
 
-  return <IconButton {...props} />
+export default function ThemeButton({ darkMode, toggleTheme }: ThemeButtonProps) {
+  return (
+    <Button
+      onClick={toggleTheme}
+      icon={darkMode ? <SunOutlined /> : <MoonOutlined />}
+      aria-label="Toggle color mode"
+    />
+  )
 }

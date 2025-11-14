@@ -4,15 +4,17 @@ import userEvent from '@testing-library/user-event'
 import ThemeButton from './ThemeButton'
 
 describe('ThemeButton', () => {
+  const mockToggleTheme = jest.fn()
+
   test('renders successfully', () => {
-    renderWithProviders(<ThemeButton />)
+    renderWithProviders(<ThemeButton darkMode={true} toggleTheme={mockToggleTheme} />)
 
     const button = screen.getByRole('button', { name: /toggle color mode/i })
     expect(button).toBeInTheDocument()
   })
 
   test('has correct aria-label', () => {
-    renderWithProviders(<ThemeButton />)
+    renderWithProviders(<ThemeButton darkMode={true} toggleTheme={mockToggleTheme} />)
 
     const button = screen.getByRole('button', { name: /toggle color mode/i })
     expect(button).toHaveAttribute('aria-label', 'Toggle color mode')
@@ -20,20 +22,21 @@ describe('ThemeButton', () => {
 
   test('toggles color mode when clicked', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<ThemeButton />)
+    const toggleFn = jest.fn()
+    renderWithProviders(<ThemeButton darkMode={true} toggleTheme={toggleFn} />)
 
     const button = screen.getByRole('button', { name: /toggle color mode/i })
 
     // Click to toggle
     await user.click(button)
 
-    // Button should still be present after click
-    expect(button).toBeInTheDocument()
+    // Should call the toggle function
+    expect(toggleFn).toHaveBeenCalledTimes(1)
   })
 
   test('is clickable', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<ThemeButton />)
+    renderWithProviders(<ThemeButton darkMode={true} toggleTheme={mockToggleTheme} />)
 
     const button = screen.getByRole('button', { name: /toggle color mode/i })
 

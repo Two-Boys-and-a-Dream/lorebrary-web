@@ -1,35 +1,37 @@
-import { MenuItem, useDisclosure, useToast } from '@chakra-ui/react'
-import { DeleteIcon } from '@chakra-ui/icons'
+import { DeleteOutlined } from '@ant-design/icons'
+import { App as AntApp } from 'antd'
 import { AlertPopup } from '../molecules'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { API } from '../../api'
+import { useState } from 'react'
 
 interface DeleteLoreMenuItemProps {
   _id?: string
 }
 
 export default function DeleteLoreMenuItem({ _id }: DeleteLoreMenuItemProps) {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [isOpen, setIsOpen] = useState(false)
+  const { message } = AntApp.useApp()
+
+  const onOpen = () => setIsOpen(true)
+  const onClose = () => setIsOpen(false)
 
   /**
    * Query/Mutation stuff
    */
-  const toast = useToast()
   const queryClient = useQueryClient()
   const mutation = useMutation({
     mutationFn: () => API.deleteLore(_id!),
     onError: (error: unknown) => {
-      toast({
-        title: 'Network error',
-        description: typeof error === 'string' ? error : 'An error occurred',
-        status: 'error',
+      message.error({
+        content: typeof error === 'string' ? error : 'An error occurred',
+        duration: 3,
       })
     },
     onSuccess: async () => {
-      toast({
-        title: 'Success',
-        description: 'Lore deleted!',
-        status: 'success',
+      message.success({
+        content: 'Lore deleted!',
+        duration: 3,
       })
       await queryClient.invalidateQueries({
         queryKey: ['lore'],
@@ -43,9 +45,10 @@ export default function DeleteLoreMenuItem({ _id }: DeleteLoreMenuItemProps) {
 
   return (
     <>
-      <MenuItem icon={<DeleteIcon />} onClick={onOpen}>
+      <span onClick={onOpen} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <DeleteOutlined />
         Delete
-      </MenuItem>
+      </span>
       <AlertPopup
         headerText="Delete Lore"
         bodyText="Are you sure? You can't undo this action afterwards."
