@@ -16,7 +16,7 @@ class API {
   #url: string
 
   constructor() {
-    this.#url = process.env.API_URL || ''
+    this.#url = String(process.env.API_URL)
   }
 
   /**

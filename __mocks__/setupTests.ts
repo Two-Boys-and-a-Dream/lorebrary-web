@@ -1,6 +1,9 @@
 // This file is used to setup test types for TypeScript
 import '@testing-library/jest-dom'
 
+// Set up environment variables for tests
+process.env.API_URL = 'https://api.example.com/'
+
 // Mock window.matchMedia for components that use media queries
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
@@ -16,13 +19,10 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 })
 
-// // Mock IntersectionObserver for Chakra UI components that might use it
-// global.IntersectionObserver = class IntersectionObserver {
-//   constructor() {}
-//   disconnect() {}
-//   observe() {}
-//   takeRecords() {
-//     return []
-//   }
-//   unobserve() {}
-// }
+// Mock window.scrollTo for components that trigger scroll behavior (e.g., modals)
+Object.defineProperty(window, 'scrollTo', {
+  writable: true,
+  value: jest.fn(),
+})
+
+jest.useFakeTimers({ advanceTimers: true })

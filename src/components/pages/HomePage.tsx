@@ -27,7 +27,6 @@ export default function HomePage() {
       return lore
     },
   })
-
   if (error) return <Text>{String(error)}</Text>
 
   // Create "fake" cards to render skeletons for while loading

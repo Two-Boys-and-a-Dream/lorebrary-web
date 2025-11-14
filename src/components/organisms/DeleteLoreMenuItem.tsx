@@ -49,6 +49,7 @@ export default function DeleteLoreMenuItem({ _id }: DeleteLoreMenuItemProps) {
       <AlertPopup
         headerText="Delete Lore"
         bodyText="Are you sure? You can't undo this action afterwards."
+        actionText="Delete"
         onConfirm={mutation.mutate}
         isOpen={isOpen}
         onClose={onClose}

@@ -15,7 +15,7 @@ interface AlertPopupProps {
   onClose: () => void
   headerText: string
   bodyText: string
-  actionText?: string
+  actionText: string
 }
 
 /**
@@ -28,7 +28,7 @@ export default function AlertPopup({
   onClose,
   headerText,
   bodyText,
-  actionText = 'Delete',
+  actionText,
 }: AlertPopupProps) {
   const cancelRef = useRef<HTMLButtonElement>(null!)
 
