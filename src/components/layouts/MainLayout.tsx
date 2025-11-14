@@ -1,6 +1,6 @@
 import { Flex, theme } from '@chakra-ui/react'
 import { Navbar } from '../organisms'
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 interface MainLayoutProps {
   children: ReactNode

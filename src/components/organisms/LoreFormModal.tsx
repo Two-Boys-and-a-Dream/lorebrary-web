@@ -1,4 +1,5 @@
-import { useState, ChangeEvent } from 'react'
+import { useState } from 'react'
+import type { ChangeEvent } from 'react'
 import {
   Button,
   Modal,
@@ -15,9 +16,9 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import { loreFieldsArr } from '../../utils/constants'
-import { FormData } from '../../utils/utils'
-import { UseMutationResult } from '@tanstack/react-query'
-import { Lore, NewLore } from '../../api'
+import type { FormData } from '../../utils/utils'
+import type { UseMutationResult } from '@tanstack/react-query'
+import type { Lore, NewLore } from '../../api'
 
 interface LoreFormModalProps {
   isOpen: boolean

@@ -7,7 +7,7 @@ import {
   AlertDialogFooter,
   Button,
 } from '@chakra-ui/react'
-import { RefObject } from 'react'
+import type { RefObject } from 'react'
 
 interface AlertPopupProps {
   onConfirm: () => void

@@ -1,7 +1,8 @@
 import { MenuItem, useDisclosure, useToast } from '@chakra-ui/react'
 import { EditIcon } from '@chakra-ui/icons'
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query'
-import { API, Lore } from '../../api'
+import { API } from '../../api'
+import type { Lore } from '../../api'
 import LoreFormModal from './LoreFormModal'
 import { buildInitialFormData } from '../../utils/utils'
 

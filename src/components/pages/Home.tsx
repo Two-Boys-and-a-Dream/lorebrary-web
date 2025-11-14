@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Flex, Text, theme } from '@chakra-ui/react'
-import { API, Lore } from '../../api'
+import { API } from '../../api'
+import type { Lore } from '../../api'
 import { LoreItem } from '../molecules'
 
 type LoreOrPlaceholder = Lore | { indexKey: number; _id: undefined }
