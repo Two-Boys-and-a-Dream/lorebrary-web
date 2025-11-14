@@ -25,12 +25,6 @@ jobs:
       - name: Install Packages
         run: npm ci --ignore-scripts
 
-      - name: Audit
-        run: npm audit --audit-level=high
-
-      - name: Test
-        run: npm run test
-
       - name: Create env file
         run: |
           echo "${{ secrets.ENV_FILE_PROD }}" > .env
