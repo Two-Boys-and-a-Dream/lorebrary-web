@@ -1,7 +1,7 @@
 import { render, type RenderOptions, act } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ConfigProvider } from 'antd'
-import { theme } from '../theme'
+import { purpleTheme } from '../theme/theme'
 import type { ReactElement } from 'react'
 
 /**
@@ -23,7 +23,7 @@ export const renderWithProviders = (
 
   return render(
     <QueryClientProvider client={queryClient}>
-      <ConfigProvider theme={theme}>{ui}</ConfigProvider>
+      <ConfigProvider theme={purpleTheme}>{ui}</ConfigProvider>
     </QueryClientProvider>,
     options
   )

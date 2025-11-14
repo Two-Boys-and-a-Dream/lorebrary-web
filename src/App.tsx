@@ -3,7 +3,7 @@ import { ConfigProvider, theme as antdTheme } from 'antd'
 import { HomePage } from './components/pages'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { theme } from './theme'
+import { purpleTheme } from './theme/theme'
 import { MainLayout } from './components/layouts'
 import { useState } from 'react'
 
@@ -21,7 +21,7 @@ export function App() {
   return (
     <ConfigProvider
       theme={{
-        ...theme,
+        ...purpleTheme,
         algorithm: darkMode
           ? antdTheme.darkAlgorithm
           : antdTheme.defaultAlgorithm,
