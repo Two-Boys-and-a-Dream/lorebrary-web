@@ -1,7 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Flex, Text, theme } from '@chakra-ui/react'
-import { API } from '../../api'
-import type { Lore } from '../../api'
+import { API, type Lore } from '../../api'
 import { LoreItem } from '../molecules'
 
 type LoreOrPlaceholder = Lore | { indexKey: number; _id: undefined }
@@ -37,8 +36,12 @@ export default function HomePage() {
   return (
     <Flex gap={theme.space[10]} wrap="wrap" justify="center">
       {loreData.map((d) => {
-        const key =
-          '_id' in d && d._id ? d._id : 'indexKey' in d ? d.indexKey : 0
+        let key: string | number = 0
+        if ('_id' in d && d._id) {
+          key = d._id
+        } else if ('indexKey' in d) {
+          key = d.indexKey
+        }
         const _id = '_id' in d && d._id ? d._id : undefined
         return <LoreItem key={key} _id={_id} isLoaded={!isLoading} />
       })}

@@ -13,7 +13,7 @@ interface AlertPopupProps {
   onConfirm: () => void
   isOpen: boolean
   onClose: () => void
-  cancelRef: RefObject<any>
+  cancelRef: RefObject<HTMLButtonElement>
   headerText: string
   bodyText: string
   actionText?: string

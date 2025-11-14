@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import type { ChangeEvent } from 'react'
+import { useState, type ChangeEvent } from 'react'
 import {
   Button,
   Modal,
@@ -24,7 +23,7 @@ interface LoreFormModalProps {
   isOpen: boolean
   onClose: () => void
   initialFormData: FormData
-  mutation: UseMutationResult<Lore, unknown, any, unknown>
+  mutation: UseMutationResult<Lore, unknown, Lore | NewLore, unknown>
   _id?: string
   onOpen?: () => void
 }
@@ -82,10 +81,10 @@ function LoreFormModal({
       {} as Lore | NewLore
     )
     try {
-      await mutation.mutateAsync(newLore as any)
+      await mutation.mutateAsync(newLore)
       // As long as the mutation succeeds, clear the form data
       setFormData(initialFormData)
-    } catch (_error) {
+    } catch {
       // Do nothing here, errors are handled in parent
     }
   }
@@ -107,7 +106,7 @@ function LoreFormModal({
 
     // Check each object in formData to determine if any fields
     // are invalid.
-    for (const [_key, v] of Object.entries(clonedFormData)) {
+    for (const v of Object.values(clonedFormData)) {
       // Check for validation error
       const isError = validateString(v.value)
       // Set error to boolean

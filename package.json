@@ -72,6 +72,7 @@
     "eslint-plugin-promise": "^7.2.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-testing-library": "^7.13.4",
     "globals": "^16.5.0",
     "jest": "^30.2.0",
     "jest-environment-jsdom": "^30.2.0",
@@ -80,7 +81,8 @@
     "prettier": "^3.6.2",
     "process": "^0.11.10",
     "simple-git-hooks": "^2.13.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.4"
   },
   "simple-git-hooks": {
     "pre-commit": "npm run pretty",

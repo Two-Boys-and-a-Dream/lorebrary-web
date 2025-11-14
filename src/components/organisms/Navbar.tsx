@@ -9,8 +9,7 @@ import {
 import { ThemeButton } from '../atoms'
 import LoreFormModal from './LoreFormModal'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
-import { API } from '../../api'
-import type { NewLore } from '../../api'
+import { API, type NewLore } from '../../api'
 import { AddIcon } from '@chakra-ui/icons'
 import { buildInitialFormData } from '../../utils/utils'
 

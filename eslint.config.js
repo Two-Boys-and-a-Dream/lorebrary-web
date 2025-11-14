@@ -1,9 +1,11 @@
 import js from '@eslint/js'
+import tseslint from 'typescript-eslint'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
 import tanstackQuery from '@tanstack/eslint-plugin-query'
 import jest from 'eslint-plugin-jest'
+import testingLibrary from 'eslint-plugin-testing-library'
 import prettier from 'eslint-config-prettier'
 import globals from 'globals'
 
@@ -16,9 +18,12 @@ export default [
   // Base JavaScript config
   js.configs.recommended,
 
+  // TypeScript config
+  ...tseslint.configs.recommended,
+
   // General settings for all files
   {
-    files: ['**/*.{js,jsx,mjs,cjs}'],
+    files: ['**/*.{js,jsx,mjs,cjs,ts,tsx}'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
@@ -42,7 +47,7 @@ export default [
 
   // React configuration
   {
-    files: ['**/*.{js,jsx}'],
+    files: ['**/*.{js,jsx,ts,tsx}'],
     plugins: {
       react,
       'react-hooks': reactHooks,
@@ -117,11 +122,31 @@ export default [
     },
   },
 
-  // Jest configuration for test files
+  // Jest setup files configuration
   {
-    files: ['**/*.test.js', '**/*.spec.js'],
+    files: ['**/__mocks__/**/*.js', '**/setupTests.js', '**/jest.setup.js'],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
+      },
+    },
+  },
+
+  // Jest and Testing Library configuration for test files
+  {
+    files: [
+      '**/*.test.js',
+      '**/*.spec.js',
+      '**/*.test.jsx',
+      '**/*.spec.jsx',
+      '**/*.test.ts',
+      '**/*.spec.ts',
+      '**/*.test.tsx',
+      '**/*.spec.tsx',
+    ],
     plugins: {
       jest,
+      'testing-library': testingLibrary,
     },
     languageOptions: {
       globals: {
@@ -130,6 +155,7 @@ export default [
     },
     rules: {
       ...jest.configs.recommended.rules,
+      ...testingLibrary.configs.react.rules,
     },
   },
 

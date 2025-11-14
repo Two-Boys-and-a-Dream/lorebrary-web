@@ -1,5 +1,4 @@
-import { loreFieldsArr } from './constants'
-import type { LoreField } from './constants'
+import { loreFieldsArr, type LoreField } from './constants'
 
 export interface FormFieldData {
   name: string
