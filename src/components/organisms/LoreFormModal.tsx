@@ -23,7 +23,9 @@ interface LoreFormModalProps {
   isOpen: boolean
   onClose: () => void
   initialFormData: FormData
-  mutation: UseMutationResult<Lore, unknown, Lore | NewLore, unknown>
+  mutation:
+    | UseMutationResult<Lore, unknown, Lore, unknown>
+    | UseMutationResult<Lore, unknown, NewLore, unknown>
   _id?: string
   onOpen?: () => void
 }
@@ -81,7 +83,9 @@ function LoreFormModal({
       {} as Lore | NewLore
     )
     try {
-      await mutation.mutateAsync(newLore)
+      // Type assertion is safe here because we know the mutation type matches
+      // whether we have an _id (update) or not (create)
+      await mutation.mutateAsync(newLore as never)
       // As long as the mutation succeeds, clear the form data
       setFormData(initialFormData)
     } catch {

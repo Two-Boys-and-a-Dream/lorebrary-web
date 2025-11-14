@@ -133,7 +133,10 @@ export default {
   // setupFiles: ['./__mocks__/jestSetup.js'],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
-  setupFilesAfterEnv: ['<rootDir>/__mocks__/setupTests.js'],
+  setupFilesAfterEnv: [
+    '<rootDir>/__mocks__/setupTests.js',
+    '<rootDir>/__mocks__/setupTests.ts',
+  ],
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.
   // slowTestThreshold: 5,

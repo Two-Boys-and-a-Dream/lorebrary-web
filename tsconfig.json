@@ -20,6 +20,6 @@
     "isolatedModules": true,
     "types": ["node", "jest"]
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "__mocks__/setupTests.ts"],
   "exclude": ["node_modules", "dist", "coverage"]
 }

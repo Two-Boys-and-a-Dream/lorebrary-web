@@ -3,7 +3,7 @@ import { Flex, Text, theme } from '@chakra-ui/react'
 import { API, type Lore } from '../../api'
 import { LoreItem } from '../molecules'
 
-type LoreOrPlaceholder = Lore | { indexKey: number; _id: undefined }
+type LoreOrPlaceholder = Lore | { indexKey: number; _id: string }
 
 export default function HomePage() {
   const queryClient = useQueryClient()
@@ -29,21 +29,14 @@ export default function HomePage() {
   const loreData: LoreOrPlaceholder[] = !isFetched
     ? Array.from({ length: 20 }, (_v, i) => ({
         indexKey: i,
-        _id: undefined,
+        _id: String(i),
       }))
     : data || []
 
   return (
     <Flex gap={theme.space[10]} wrap="wrap" justify="center">
-      {loreData.map((d) => {
-        let key: string | number = 0
-        if ('_id' in d && d._id) {
-          key = d._id
-        } else if ('indexKey' in d) {
-          key = d.indexKey
-        }
-        const _id = '_id' in d && d._id ? d._id : undefined
-        return <LoreItem key={key} _id={_id} isLoaded={!isLoading} />
+      {loreData.map(({ _id }) => {
+        return <LoreItem key={_id} _id={_id} isLoaded={!isLoading} />
       })}
     </Flex>
   )

@@ -1,4 +1,3 @@
-import React from 'react'
 import { MenuItem, useDisclosure, useToast } from '@chakra-ui/react'
 import { DeleteIcon } from '@chakra-ui/icons'
 import { AlertPopup } from '../molecules'
@@ -11,7 +10,6 @@ interface DeleteLoreMenuItemProps {
 
 export default function DeleteLoreMenuItem({ _id }: DeleteLoreMenuItemProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const cancelRef = React.useRef<HTMLButtonElement>(null)
 
   /**
    * Query/Mutation stuff
@@ -54,7 +52,6 @@ export default function DeleteLoreMenuItem({ _id }: DeleteLoreMenuItemProps) {
         onConfirm={mutation.mutate}
         isOpen={isOpen}
         onClose={onClose}
-        cancelRef={cancelRef}
       />
     </>
   )

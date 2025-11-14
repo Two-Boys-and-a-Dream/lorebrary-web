@@ -7,13 +7,12 @@ import {
   AlertDialogFooter,
   Button,
 } from '@chakra-ui/react'
-import type { RefObject } from 'react'
+import { useRef } from 'react'
 
 interface AlertPopupProps {
   onConfirm: () => void
   isOpen: boolean
   onClose: () => void
-  cancelRef: RefObject<HTMLButtonElement>
   headerText: string
   bodyText: string
   actionText?: string
@@ -27,11 +26,12 @@ export default function AlertPopup({
   onConfirm,
   isOpen,
   onClose,
-  cancelRef,
   headerText,
   bodyText,
   actionText = 'Delete',
 }: AlertPopupProps) {
+  const cancelRef = useRef<HTMLButtonElement>(null!)
+
   return (
     <AlertDialog
       isOpen={isOpen}
