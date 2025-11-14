@@ -2,91 +2,143 @@
 
 ## Project Overview
 
-This is a React + TypeScript web application using Chakra UI for styling and React Query for data fetching. The app manages "Lore" items with CRUD operations.
+React + TypeScript SPA for managing "Lore" items (game-related text snippets) with full CRUD operations. Built with Parcel bundler, Chakra UI for styling, and TanStack React Query for server state management.
+
+**Tech Stack**: React 19, TypeScript, Chakra UI v2, TanStack React Query v5, Parcel, Jest + Testing Library
+
+**Key Architecture Pattern**: React Query acts as client-side cache. The `HomePage` fetches all lore and sets individual items in cache by ID (`['lore', _id]`). Child components like `LoreItem` read from this cache using `queryClient.getQueryData()`. This eliminates prop drilling while maintaining data consistency.
+
+## Developer Workflows
+
+### Build & Test Commands
+
+- **`npm start`** - Dev server on port 3000 (Parcel with HMR)
+- **`npm test`** - Run Jest tests (must pass 100% coverage on all metrics)
+- **`npm run verify`** - Pre-push validation (prettier, lint, type-check, tests)
+- **`npm run lint`** - ESLint with flat config (modern setup, see `docs/ESLINT_CONFIG.md`)
+- **`npm run ts:check`** - TypeScript validation without emitting files
+
+### Pre-commit/Pre-push Hooks
+
+Git hooks run automatically via `simple-git-hooks`:
+
+- **pre-commit**: `npm run pretty` (auto-formats code)
+- **pre-push**: `npm run lint` (blocks push on lint errors)
+
+### Coverage Requirements
+
+Jest enforces **100% coverage** on all metrics (statements, branches, functions, lines). Tests must be comprehensive. See `jest.config.js` for thresholds.
 
 ## Code Style & Standards
 
-### General
+### TypeScript Strictness
 
-- Use TypeScript for all new files
-- Use functional components with hooks (no class components)
-- Use arrow functions for component definitions
-- Use named exports for utilities, default exports for components
-- Prefer `const` over `let`, avoid `var`
-- Use template literals for string interpolation
-- Use optional chaining (`?.`) and nullish coalescing (`??`) where appropriate
+- `strict: true` with all strict mode flags enabled
+- `noUnusedLocals`, `noUnusedParameters`, `noImplicitReturns`, `noFallthroughCasesInSwitch` enforced
+- Always define explicit types for function parameters/returns
+- Use `interface` for object shapes, `type` for unions/intersections
+- Use `unknown` instead of `any`
 
-### Imports
+### React Component Patterns
 
-- Group imports in this order: React, third-party libraries, local imports
-- Use absolute imports via TypeScript path aliases when available
-- Sort imports alphabetically within each group
+- Functional components only (no classes)
+- Default exports for components, named exports for utilities
+- Component files: PascalCase (e.g., `HomePage.tsx`)
+- Props interfaces: `ComponentNameProps` suffix
+- Destructure props in function signature
+- One component per file, co-located tests (`Component.test.tsx`)
 
-### TypeScript
+## Critical Architecture: React Query Cache Pattern
 
-- Always define explicit types for function parameters and return types
-- Use `interface` for object types, `type` for unions/intersections
-- Prefer type inference for simple variable declarations
-- Use `unknown` instead of `any` when the type is truly unknown
-- Export types alongside their related code
-
-### React Components
-
-- One component per file
-- Component files should be named with PascalCase (e.g., `HomePage.tsx`)
-- Props should be defined as interfaces with the suffix `Props`
-- Use destructuring for props
-- Keep components small and focused (single responsibility)
-- Extract complex logic into custom hooks
+**The HomePage is the source of truth.** It fetches all lore and populates the query cache:
 
 ```typescript
-interface MyComponentProps {
-  title: string
-  isActive?: boolean
-}
+// In HomePage: Fetch all and cache individually
+const { data } = useQuery({
+  queryKey: ['lore'],
+  queryFn: async () => {
+    const lore = await API.getAllLore()
+    // ⚡ Critical: Set each item in cache by ID
+    lore.forEach((element) =>
+      queryClient.setQueryData(['lore', element._id], element)
+    )
+    return lore
+  },
+})
 
-const MyComponent = ({ title, isActive = false }: MyComponentProps) => {
-  // Component logic
-}
-
-export default MyComponent
+// In LoreItem: Read from cache (no API call)
+const queryClient = useQueryClient()
+const data = queryClient.getQueryData<Lore>(['lore', _id])
 ```
 
-### State Management
+**Why**: This pattern eliminates prop drilling. Child components access data via cache keys without re-fetching. Mutations invalidate `['lore']` to trigger refetch, which repopulates individual caches.
 
-- Use React Query for server state (data fetching, caching)
-- Use `useState` for local component state
-- Use `useReducer` for complex state logic
-- Avoid prop drilling - consider Context API or React Query for shared state
+**Mutation Pattern**: All mutations (create/update/delete) must:
 
-### Styling
+1. Show toast on success/error
+2. Invalidate `['lore']` query on success (triggers HomePage refetch)
+3. Handle both string and non-string errors in `onError`
 
-- Use Chakra UI components and props for styling
-- Use the custom theme defined in `src/theme/theme.ts`
-- Prefer Chakra's responsive array syntax for responsive design
-- Keep custom CSS minimal - use `App.module.css` only when necessary
+```typescript
+const mutation = useMutation({
+  mutationFn: API.deleteLore,
+  onError: (error: unknown) => {
+    toast({
+      title: 'Network error',
+      description: typeof error === 'string' ? error : 'An error occurred',
+      status: 'error',
+    })
+  },
+  onSuccess: async () => {
+    toast({ title: 'Success', status: 'success' })
+    await queryClient.invalidateQueries({ queryKey: ['lore'], exact: true })
+  },
+})
+```
+
+## Styling with Chakra UI
+
+- All styling via Chakra components and props (minimal custom CSS)
+- Custom theme: `src/theme/theme.ts` (dark mode by default)
+- Toast position: `bottom`, always closable
+- Use responsive array syntax: `<Box w={[300, 400, 500]} />`
 
 ## Testing Standards
 
-### General Testing Practices
+### Test Setup & Mocking
 
-- Write tests for all components and critical utility functions
-- Test files should be co-located with the code they test
-- Name test files with `.test.tsx` or `.test.ts` suffix
-- Use descriptive test names that explain the expected behavior
+**Global test setup** (`__mocks__/setupTests.ts`):
 
-### Jest Configuration
+- API module auto-mocked via `jest.mock('../../api')`
+- `jest.clearMocks: true` in config - **never** call `jest.clearAllMocks()` manually
+- Fake timers enabled globally with `advanceTimers: true`
+- `window.matchMedia` and `window.scrollTo` mocked for Chakra UI compatibility
+- `process.env.API_URL` set for tests
 
-**IMPORTANT**: Our Jest config has `clearMocks: true` enabled globally, which automatically clears all mocks between tests. You do NOT need to call `jest.clearAllMocks()` in `beforeEach` blocks.
+**Test utilities** (`src/utils/testUtils.tsx`):
 
-### Testing Utilities
+- `renderWithProviders()` - Wraps components with QueryClient + ChakraProvider
+- `cleanupToasts()` - Removes Chakra toasts/modals between tests (call in `afterEach`)
+- Creates fresh QueryClient per test with `retry: false` for fast failures
 
-- Import from `@testing-library/react` for testing utilities
-- Use `renderWithProviders` from `src/utils/testUtils.tsx` to render components
-- Use `mockLoreData` from `src/utils/testData.ts` for consistent test data
-- API module is globally mocked via `src/api/__mocks__/index.ts`
+### API Mock Behavior (`src/api/__mocks__/index.ts`)
 
-### Writing Tests
+Default implementations:
+
+- `getAllLore()` → `mockLoreData` (3 items)
+- `createLore(newLore)` → new Lore with generated ID & timestamps
+- `deleteLore(_id)` → resolves successfully
+- `updateLore(updatedLore)` → returns updated lore with new `updatedAt`
+- `getLoreById(_id)` → finds by ID or rejects "Lore not found"
+
+Override when needed:
+
+```typescript
+const mockAPI = API.getAllLore as jest.MockedFunction<typeof API.getAllLore>
+mockAPI.mockRejectedValue('Network error')
+```
+
+### Test Pattern Example
 
 ```typescript
 import { screen, waitFor } from '@testing-library/react'
@@ -95,11 +147,10 @@ import { API } from '../../api'
 import { mockLoreData } from '../../utils/testData'
 import MyComponent from './MyComponent'
 
-// Mock the API module
 jest.mock('../../api')
 
 describe('MyComponent', () => {
-  // NO need for beforeEach with jest.clearAllMocks() - it's automatic!
+  // NO jest.clearAllMocks() needed - automatic via jest.config.js
 
   test('renders successfully', () => {
     renderWithProviders(<MyComponent />)
@@ -108,22 +159,27 @@ describe('MyComponent', () => {
 
   test('fetches and displays data', async () => {
     renderWithProviders(<MyComponent />)
-
     await waitFor(() => {
       expect(screen.getByText(mockLoreData[0].title)).toBeInTheDocument()
     })
-
     expect(API.getAllLore).toHaveBeenCalledTimes(1)
   })
 
-  test('handles errors gracefully', async () => {
-    const mockGetAllLore = API.getAllLore as jest.MockedFunction<typeof API.getAllLore>
-    mockGetAllLore.mockRejectedValue(new Error('Network error'))
-
+  test('handles string errors', async () => {
+    const mockAPI = API.getAllLore as jest.MockedFunction<typeof API.getAllLore>
+    mockAPI.mockRejectedValue('Network error')
     renderWithProviders(<MyComponent />)
-
     await waitFor(() => {
-      expect(screen.getByText(/error/i)).toBeInTheDocument()
+      expect(screen.getByText(/network error/i)).toBeInTheDocument()
+    })
+  })
+
+  test('handles non-string errors', async () => {
+    const mockAPI = API.getAllLore as jest.MockedFunction<typeof API.getAllLore>
+    mockAPI.mockRejectedValue({ code: 500 })
+    renderWithProviders(<MyComponent />)
+    await waitFor(() => {
+      expect(screen.getByText(/an error occurred/i)).toBeInTheDocument()
     })
   })
 })
@@ -148,23 +204,6 @@ describe('MyComponent', () => {
 6. `getByAltText` - For images
 7. `getByTitle` - For supplementary information
 8. `getByTestId` - Last resort only
-
-### API Mocking
-
-The API module is automatically mocked with sensible defaults:
-
-- `getAllLore()` returns 3 sample lore items
-- `createLore()` creates a new lore with generated ID
-- `deleteLore()` resolves successfully
-- `updateLore()` returns updated lore with new timestamp
-- `getLoreById()` finds lore by ID
-
-Override default behavior only when needed:
-
-```typescript
-const mockAPI = API.getAllLore as jest.MockedFunction<typeof API.getAllLore>
-mockAPI.mockResolvedValue([]) // Empty array for this specific test
-```
 
 ## Component Structure
 
