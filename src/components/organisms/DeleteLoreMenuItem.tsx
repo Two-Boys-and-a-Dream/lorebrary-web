@@ -1,5 +1,5 @@
 import { DeleteOutlined } from '@ant-design/icons'
-import { App as AntApp } from 'antd'
+import { message } from 'antd'
 import { AlertPopup } from '../molecules'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { API } from '../../api'
@@ -11,7 +11,6 @@ interface DeleteLoreMenuItemProps {
 
 export default function DeleteLoreMenuItem({ _id }: DeleteLoreMenuItemProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const { message } = AntApp.useApp()
 
   const onOpen = () => setIsOpen(true)
   const onClose = () => setIsOpen(false)
@@ -23,16 +22,10 @@ export default function DeleteLoreMenuItem({ _id }: DeleteLoreMenuItemProps) {
   const mutation = useMutation({
     mutationFn: () => API.deleteLore(_id!),
     onError: (error: unknown) => {
-      message.error({
-        content: typeof error === 'string' ? error : 'An error occurred',
-        duration: 3,
-      })
+      message.error(typeof error === 'string' ? error : 'An error occurred')
     },
     onSuccess: async () => {
-      message.success({
-        content: 'Lore deleted!',
-        duration: 3,
-      })
+      message.success('Lore deleted!')
       await queryClient.invalidateQueries({
         queryKey: ['lore'],
         exact: true,

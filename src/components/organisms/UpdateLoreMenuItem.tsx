@@ -1,5 +1,5 @@
 import { EditOutlined } from '@ant-design/icons'
-import { App as AntApp } from 'antd'
+import { message } from 'antd'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { API, type Lore } from '../../api'
 import LoreFormModal from './LoreFormModal'
@@ -12,7 +12,6 @@ interface UpdateLoreMenuItemProps {
 
 export default function UpdateLoreMenuItem({ _id }: UpdateLoreMenuItemProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const { message } = AntApp.useApp()
   const queryClient = useQueryClient()
   const data = queryClient.getQueryData<Lore>(['lore', _id])
 
@@ -25,16 +24,10 @@ export default function UpdateLoreMenuItem({ _id }: UpdateLoreMenuItemProps) {
   const mutation = useMutation({
     mutationFn: async (newLore: Lore) => API.updateLore(newLore),
     onError: (error: unknown) => {
-      message.error({
-        content: typeof error === 'string' ? error : 'An error occurred',
-        duration: 3,
-      })
+      message.error(typeof error === 'string' ? error : 'An error occurred')
     },
     onSuccess: async () => {
-      message.success({
-        content: 'Lore updated!',
-        duration: 3,
-      })
+      message.success('Lore updated!')
       await queryClient.invalidateQueries({
         queryKey: ['lore', _id],
         exact: true,

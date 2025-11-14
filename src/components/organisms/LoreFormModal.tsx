@@ -1,5 +1,5 @@
 import { useState, type ChangeEvent } from 'react'
-import { Button, Modal, Input, Flex, Typography, App as AntApp } from 'antd'
+import { Button, Modal, Input, Flex, Typography, message } from 'antd'
 import { loreFieldsArr } from '../../utils/constants'
 import type { FormData } from '../../utils/utils'
 import type { UseMutationResult } from '@tanstack/react-query'
@@ -27,7 +27,6 @@ function LoreFormModal({
   _id,
 }: LoreFormModalProps) {
   const [formData, setFormData] = useState(initialFormData)
-  const { message } = AntApp.useApp()
 
   /**
    * Updates state value for specific field

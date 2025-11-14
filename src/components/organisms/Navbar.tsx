@@ -1,4 +1,4 @@
-import { Flex, Button, App as AntApp } from 'antd'
+import { Flex, Button, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { ThemeButton } from '../atoms'
 import LoreFormModal from './LoreFormModal'
@@ -15,7 +15,6 @@ interface NavbarProps {
 
 export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const { message } = AntApp.useApp()
   const queryClient = useQueryClient()
 
   const onOpen = () => setIsOpen(true)
@@ -27,16 +26,10 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
   const mutation = useMutation({
     mutationFn: async (newLore: NewLore) => API.createLore(newLore),
     onError: (error: unknown) => {
-      message.error({
-        content: typeof error === 'string' ? error : 'An error occurred',
-        duration: 3,
-      })
+      message.error(typeof error === 'string' ? error : 'An error occurred')
     },
     onSuccess: async () => {
-      message.success({
-        content: 'Lore created!',
-        duration: 3,
-      })
+      message.success('Lore created!')
       await queryClient.invalidateQueries({
         queryKey: ['lore'],
         exact: true,
