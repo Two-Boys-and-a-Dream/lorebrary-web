@@ -25,4 +25,14 @@ Object.defineProperty(window, 'scrollTo', {
   value: jest.fn(),
 })
 
+// Mock getComputedStyle for Ant Design components
+Object.defineProperty(window, 'getComputedStyle', {
+  writable: true,
+  value: jest.fn().mockImplementation(() => ({
+    getPropertyValue: jest.fn().mockReturnValue(''),
+    paddingLeft: '0px',
+    paddingRight: '0px',
+  })),
+})
+
 jest.useFakeTimers({ advanceTimers: true })

@@ -110,11 +110,11 @@ describe('HomePage Component', () => {
       expect(screen.getByText(mockLoreData[0].title)).toBeInTheDocument()
     })
 
-    // Get all lore card titles (filter out "Context" accordion headers)
+    // Get all lore card titles
     const loreTitles = screen
-      .getAllByRole('heading', { level: 2 })
+      .getAllByRole('heading', { level: 4 })
       .map((heading) => heading.textContent)
-      .filter((text) => text !== 'Context' && text !== '')
+      .filter((text) => text !== '')
 
     // Expected order: newest to oldest based on createdAt
     // mockLoreData[0] = 'The Ancient Prophecy' (2025-01-02)
@@ -135,7 +135,7 @@ describe('HomePage Component', () => {
     // Create test data with items missing createdAt to test both branches
     const loreWithMissingDates: Lore[] = [
       {
-        _id: '1',
+        _id: 'lore-1',
         title: 'Item with date',
         subtitle: 'Has date',
         game: 'Test',
@@ -143,7 +143,7 @@ describe('HomePage Component', () => {
         createdAt: '2025-01-02T00:00:00.000Z',
       },
       {
-        _id: '2',
+        _id: 'lore-2',
         title: 'Item without date A',
         subtitle: 'No date',
         game: 'Test',
@@ -151,7 +151,7 @@ describe('HomePage Component', () => {
         // No createdAt
       },
       {
-        _id: '3',
+        _id: 'lore-3',
         title: 'Item without date B',
         subtitle: 'No date',
         game: 'Test',
@@ -172,9 +172,9 @@ describe('HomePage Component', () => {
 
     // Items without dates should be sorted to the end (treated as epoch 0)
     const loreTitles = screen
-      .getAllByRole('heading', { level: 2 })
+      .getAllByRole('heading', { level: 4 })
       .map((heading) => heading.textContent)
-      .filter((text) => text !== 'Context' && text !== '')
+      .filter((text) => text !== '')
 
     // Item with date should be first, items without date can be in any order
     expect(loreTitles[0]).toBe('Item with date')

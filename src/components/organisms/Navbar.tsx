@@ -1,40 +1,36 @@
-import {
-  Flex,
-  IconButton,
-  theme,
-  useColorModeValue,
-  useDisclosure,
-  useToast,
-} from '@chakra-ui/react'
+import { App, Flex, Button } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
 import { ThemeButton } from '../atoms'
 import LoreFormModal from './LoreFormModal'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { API, type NewLore } from '../../api'
-import { AddIcon } from '@chakra-ui/icons'
 import { buildInitialFormData } from '../../utils/utils'
+import { useState } from 'react'
 
-export default function Navbar() {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const toast = useToast()
+interface NavbarProps {
+  darkMode: boolean
+  setDarkMode: (_darkMode: boolean) => void
+}
+
+export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
+  const [isOpen, setIsOpen] = useState(false)
+  const { message } = App.useApp()
+
   const queryClient = useQueryClient()
+
+  const onOpen = () => setIsOpen(true)
+  const onClose = () => setIsOpen(false)
 
   /**
    * Mutation for lore form submission
    */
   const mutation = useMutation({
     mutationFn: async (newLore: NewLore) => API.createLore(newLore),
-    onError: (error: unknown) =>
-      toast({
-        title: 'Network error',
-        description: typeof error === 'string' ? error : 'An error occurred',
-        status: 'error',
-      }),
+    onError: (error: Error) => {
+      message.error(error.message)
+    },
     onSuccess: async () => {
-      toast({
-        title: 'Success',
-        description: 'Lore created!',
-        status: 'success',
-      })
+      message.success('Lore created!')
       await queryClient.invalidateQueries({
         queryKey: ['lore'],
         exact: true,
@@ -43,28 +39,32 @@ export default function Navbar() {
     },
   })
 
-  const borderColor = useColorModeValue(
-    theme.colors.gray[200],
-    theme.colors.gray[500]
-  )
-  const bgColor = useColorModeValue(theme.colors.white, theme.colors.gray[800])
   const initialFormData = buildInitialFormData()
 
   return (
     <>
       <Flex
-        p={theme.space[5]}
-        borderBottom={theme.borders['1px']}
-        borderBottomColor={borderColor}
-        justify="flex-end"
-        gap={theme.space[5]}
-        position="sticky"
-        bgColor={bgColor}
-        zIndex={2}
-        top={0}
+        style={{
+          padding: '20px',
+          borderBottom: '1px solid rgba(128, 128, 128, 0.3)',
+          justifyContent: 'flex-end',
+          gap: '20px',
+          position: 'sticky',
+          top: 0,
+          zIndex: 10,
+          backgroundColor: darkMode ? '#141414' : '#ffffff',
+        }}
       >
-        <IconButton onClick={onOpen} icon={<AddIcon />} aria-label="Add lore" />
-        <ThemeButton />
+        <Button
+          onClick={onOpen}
+          icon={<PlusOutlined />}
+          aria-label="Add lore"
+          title="Add Lore"
+        />
+        <ThemeButton
+          darkMode={darkMode}
+          toggleTheme={() => setDarkMode(!darkMode)}
+        />
       </Flex>
       <LoreFormModal
         key={isOpen ? 'create-open' : 'create-closed'}

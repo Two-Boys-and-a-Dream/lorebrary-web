@@ -1,24 +1,12 @@
 import { useState, type ChangeEvent } from 'react'
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-  Input,
-  Flex,
-  Textarea,
-  useToast,
-  FormLabel,
-} from '@chakra-ui/react'
+import { App, Button, Modal, Input, Flex, Typography } from 'antd'
 import { loreFieldsArr } from '../../utils/constants'
 import type { FormData } from '../../utils/utils'
 import type { UseMutationResult } from '@tanstack/react-query'
 import type { Lore, NewLore } from '../../api'
+
+const { TextArea } = Input
+const { Text } = Typography
 
 interface LoreFormModalProps {
   isOpen: boolean
@@ -39,7 +27,7 @@ function LoreFormModal({
   _id,
 }: LoreFormModalProps) {
   const [formData, setFormData] = useState(initialFormData)
-  const toast = useToast()
+  const { message } = App.useApp()
 
   /**
    * Updates state value for specific field
@@ -65,11 +53,7 @@ function LoreFormModal({
     // First validate form,
     // if invalid set error states for inputs and bail early.
     if (!validateForm()) {
-      toast({
-        title: 'Errors in form',
-        description: 'Please fill out all fields.',
-        status: 'error',
-      })
+      message.error('Please fill out all fields.')
       return
     }
 
@@ -134,51 +118,50 @@ function LoreFormModal({
 
   return (
     <Modal
-      isOpen={isOpen}
-      onClose={handleClose}
-      isCentered
-      closeOnOverlayClick={false}
-      size="2xl"
+      open={isOpen}
+      onCancel={handleClose}
+      centered
+      maskClosable={false}
+      width={800}
+      title={`${_id ? 'Update' : 'Create'} Lore`}
+      destroyOnHidden
+      footer={[
+        <Button key="cancel" onClick={handleClose}>
+          Cancel
+        </Button>,
+        <Button
+          key="submit"
+          type="primary"
+          onClick={onSubmit}
+          loading={mutation.isPending}
+        >
+          {_id ? 'Update' : 'Create'}
+        </Button>,
+      ]}
     >
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>{_id ? 'Update' : 'Create'} Lore</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <Flex direction="column" gap={5}>
-            <Text fontSize="lg">Let&apos;s hear about that juicy new new</Text>
-            {loreFieldsArr.map((field) => {
-              // Assign component depending on field.
-              // They all share same props anyways.
-              const Component = field === 'text' ? Textarea : Input
-              const label = field.charAt(0).toUpperCase() + field.slice(1)
-              return (
-                <Flex key={field} direction="column">
-                  <FormLabel mb={1}>{label}</FormLabel>
-                  <Component
-                    name={field}
-                    value={formData[field].value}
-                    onChange={onChange}
-                    isInvalid={formData[field].error}
-                    variant="filled"
-                  />
-                </Flex>
-              )
-            })}
-          </Flex>
-        </ModalBody>
-
-        <ModalFooter>
-          <Button
-            colorScheme="green"
-            onClick={onSubmit}
-            isLoading={mutation.isPending}
-            loadingText={_id ? 'Updating' : 'Creating'}
-          >
-            {_id ? 'Update' : 'Create'}
-          </Button>
-        </ModalFooter>
-      </ModalContent>
+      <Flex vertical gap={20}>
+        <Text style={{ fontSize: '18px' }}>
+          Let&apos;s hear about that juicy new new
+        </Text>
+        {loreFieldsArr.map((field) => {
+          // Assign component depending on field.
+          // They all share same props anyways.
+          const Component = field === 'text' ? TextArea : Input
+          const label = field.charAt(0).toUpperCase() + field.slice(1)
+          return (
+            <Flex key={field} vertical>
+              <Text style={{ marginBottom: 4 }}>{label}</Text>
+              <Component
+                name={field}
+                value={formData[field].value}
+                onChange={onChange}
+                status={formData[field].error ? 'error' : ''}
+                rows={field === 'text' ? 4 : undefined}
+              />
+            </Flex>
+          )
+        })}
+      </Flex>
     </Modal>
   )
 }

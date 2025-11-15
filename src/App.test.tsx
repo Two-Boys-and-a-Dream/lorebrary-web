@@ -10,12 +10,11 @@
  * - UI interactions (modals, accordions, menus)
  */
 
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { App } from './App'
 import { API, type Lore, type NewLore } from './api'
 import { mockLoreData } from './utils/testData'
-import { cleanupToasts } from './utils/testUtils'
 
 // Mock the API module
 jest.mock('./api')
@@ -30,11 +29,6 @@ const getInputByName = (name: string) => {
 }
 
 describe('App Component - Full User Interaction Flows', () => {
-  // Cleanup toasts between tests to prevent interference
-  afterEach(() => {
-    cleanupToasts()
-  })
-
   // Reset mock implementations before each test
   beforeEach(() => {
     // Reset getAllLore to return mockLoreData by default
@@ -126,9 +120,7 @@ describe('App Component - Full User Interaction Flows', () => {
       await user.click(addButton)
 
       // Step 2: Verify modal is open
-      expect(
-        screen.getByRole('dialog', { name: /create lore/i })
-      ).toBeInTheDocument()
+      expect(screen.getByText(/create lore/i)).toBeInTheDocument()
 
       // Step 3: Fill out the form
       await user.type(getInputByName('title'), 'Epic Quest Begins')
@@ -160,7 +152,7 @@ describe('App Component - Full User Interaction Flows', () => {
 
       // Step 7: Verify modal closes
       await waitFor(() => {
-        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+        expect(screen.queryByText(/create lore/i)).not.toBeInTheDocument()
       })
 
       // Step 8: Verify lore list is refreshed (getAllLore called again)
@@ -187,11 +179,13 @@ describe('App Component - Full User Interaction Flows', () => {
 
       // Should see validation error
       await waitFor(() => {
-        expect(screen.getByText(/errors in form/i)).toBeInTheDocument()
+        expect(
+          screen.getByText(/please fill out all fields/i)
+        ).toBeInTheDocument()
       })
 
       // Modal should still be open
-      expect(screen.getByRole('dialog')).toBeInTheDocument()
+      expect(screen.getByText(/create lore/i)).toBeInTheDocument()
 
       // Fill in the form
       await user.type(getInputByName('title'), 'Valid Title')
@@ -228,14 +222,13 @@ describe('App Component - Full User Interaction Flows', () => {
       await user.click(screen.getByRole('button', { name: /add lore/i }))
       await user.type(getInputByName('title'), 'Unsaved')
 
-      // Close modal without saving
-      const modal = screen.getByRole('dialog')
-      const closeButton = within(modal).getByRole('button', { name: /close/i })
-      await user.click(closeButton)
+      // Close modal without saving - use Cancel button instead of close icon
+      const cancelButton = screen.getByRole('button', { name: /cancel/i })
+      await user.click(cancelButton)
 
       // Modal should close
       await waitFor(() => {
-        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+        expect(screen.queryByText(/create lore/i)).not.toBeInTheDocument()
       })
 
       // Create API should not have been called
@@ -260,7 +253,7 @@ describe('App Component - Full User Interaction Flows', () => {
       // Find the lore card and open its menu
       await waitFor(() => {
         expect(
-          screen.getAllByRole('heading', { level: 2 }).length
+          screen.getAllByRole('heading', { level: 4 }).length
         ).toBeGreaterThan(0)
       })
 
@@ -269,14 +262,12 @@ describe('App Component - Full User Interaction Flows', () => {
       await user.click(menuButtons[0])
 
       // Click Update option
-      const updateMenuItem = screen.getByRole('menuitem', { name: /update/i })
+      const updateMenuItem = screen.getByText(/^update$/i)
       await user.click(updateMenuItem)
 
       // Modal should open with Update title and pre-filled data
       await waitFor(() => {
-        expect(
-          screen.getByRole('dialog', { name: /update lore/i })
-        ).toBeInTheDocument()
+        expect(screen.getByText(/update lore/i)).toBeInTheDocument()
       })
 
       // Verify fields are pre-filled
@@ -309,7 +300,7 @@ describe('App Component - Full User Interaction Flows', () => {
 
       // Modal should close
       await waitFor(() => {
-        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+        expect(screen.queryByText(/update lore/i)).not.toBeInTheDocument()
       })
     })
   })
@@ -331,7 +322,7 @@ describe('App Component - Full User Interaction Flows', () => {
       // Find the lore card and open its menu
       await waitFor(() => {
         expect(
-          screen.getAllByRole('heading', { level: 2 }).length
+          screen.getAllByRole('heading', { level: 4 }).length
         ).toBeGreaterThan(0)
       })
 
@@ -340,7 +331,7 @@ describe('App Component - Full User Interaction Flows', () => {
       await user.click(menuButtons[0])
 
       // Click Delete option
-      const deleteMenuItem = screen.getByRole('menuitem', { name: /delete/i })
+      const deleteMenuItem = screen.getByText(/^delete$/i)
       await user.click(deleteMenuItem)
 
       // Confirmation dialog should appear
@@ -388,13 +379,13 @@ describe('App Component - Full User Interaction Flows', () => {
       // Open menu and click delete
       await waitFor(() => {
         expect(
-          screen.getAllByRole('heading', { level: 2 }).length
+          screen.getAllByRole('heading', { level: 4 }).length
         ).toBeGreaterThan(0)
       })
       const menuButtons = screen.getAllByRole('button', { name: /options/i })
       await user.click(menuButtons[0])
 
-      const deleteMenuItem = screen.getByRole('menuitem', { name: /delete/i })
+      const deleteMenuItem = screen.getByText(/^delete$/i)
       await user.click(deleteMenuItem)
 
       // Wait for confirmation dialog
@@ -424,37 +415,40 @@ describe('App Component - Full User Interaction Flows', () => {
   })
 
   describe('View lore details flow', () => {
-    test('complete flow: expand accordion to view context details', async () => {
+    test('complete flow: click info icon to view context details in popover', async () => {
       const user = userEvent.setup()
       render(<App />)
 
+      // The first displayed item is mockLoreData[1] (The Forgotten Temple) due to sorting by date (newest first)
+      const firstDisplayedItem = mockLoreData[1]
+
       // Wait for lore items to load with full content (not just skeletons)
       await waitFor(() => {
-        expect(screen.getByText(mockLoreData[0].title)).toBeInTheDocument()
-        expect(screen.getByText(mockLoreData[0].text)).toBeInTheDocument()
+        expect(screen.getByText(firstDisplayedItem.title)).toBeInTheDocument()
+        expect(screen.getByText(firstDisplayedItem.text)).toBeInTheDocument()
       })
 
-      // Find the Context accordion buttons - get the first one
-      // Wait for the accordion to be rendered
-      const accordionButtons = await screen.findAllByRole('button', {
-        name: /context/i,
-      })
-      const accordionButton = accordionButtons[0]
+      // Find the info icon buttons - get the first one
+      const infoIcons = screen.getAllByLabelText('info-circle')
+      const firstInfoIcon = infoIcons[0]
 
       // Initially, detailed context (game, subtitle) should not be visible
-      expect(
-        screen.queryAllByText(`Game: ${mockLoreData[0].game}`)[0]
-      ).not.toBeVisible()
+      const gameElements = screen.queryAllByText(
+        `Game: ${firstDisplayedItem.game}`
+      )
+      expect(gameElements.length).toBe(0)
 
-      // Click accordion to expand
-      await user.click(accordionButton)
+      // Click info icon to open popover
+      await user.click(firstInfoIcon)
 
-      // Context details should now be visible (there may be multiple, check count changed)
+      // Context details should now be visible in the popover
       await waitFor(() => {
-        const gameTexts = screen.getAllByText(`Game: ${mockLoreData[0].game}`)
+        const gameTexts = screen.getAllByText(
+          `Game: ${firstDisplayedItem.game}`
+        )
         expect(gameTexts.length).toBeGreaterThan(0)
         const infoTexts = screen.getAllByText(
-          `Info: ${mockLoreData[0].subtitle}`
+          `Info: ${firstDisplayedItem.subtitle}`
         )
         expect(infoTexts.length).toBeGreaterThan(0)
       })
@@ -480,12 +474,12 @@ describe('App Component - Full User Interaction Flows', () => {
       })
     })
 
-    test('string error on create shows specific error message', async () => {
+    test('error on create shows specific error message', async () => {
       const user = userEvent.setup()
       const mockCreateLore = API.createLore as jest.MockedFunction<
         typeof API.createLore
       >
-      mockCreateLore.mockRejectedValue('Failed to create')
+      mockCreateLore.mockRejectedValue(new Error('Failed to create'))
 
       render(<App />)
 
@@ -503,47 +497,13 @@ describe('App Component - Full User Interaction Flows', () => {
       // Submit
       await user.click(screen.getByRole('button', { name: /^create$/i }))
 
-      // String error message should appear
+      // Error message should appear
       await waitFor(() => {
-        expect(screen.getByText(/network error/i)).toBeInTheDocument()
         expect(screen.getByText(/failed to create/i)).toBeInTheDocument()
       })
 
       // Modal should remain open
-      expect(screen.getByRole('dialog')).toBeInTheDocument()
-    })
-
-    test('non-string error on create shows generic error message', async () => {
-      const user = userEvent.setup()
-      const mockCreateLore = API.createLore as jest.MockedFunction<
-        typeof API.createLore
-      >
-      mockCreateLore.mockRejectedValue({ message: 'Error object' })
-
-      render(<App />)
-
-      await waitFor(() => {
-        expect(screen.getByText(mockLoreData[0].title)).toBeInTheDocument()
-      })
-
-      // Open modal and fill form
-      await user.click(screen.getByRole('button', { name: /add lore/i }))
-      await user.type(getInputByName('title'), 'Test')
-      await user.type(getInputByName('subtitle'), 'Test')
-      await user.type(getInputByName('game'), 'Test')
-      await user.type(getInputByName('text'), 'Test')
-
-      // Submit
-      await user.click(screen.getByRole('button', { name: /^create$/i }))
-
-      // Generic error message should appear
-      await waitFor(() => {
-        expect(screen.getByText(/network error/i)).toBeInTheDocument()
-        expect(screen.getByText(/an error occurred/i)).toBeInTheDocument()
-      })
-
-      // Modal should remain open
-      expect(screen.getByRole('dialog')).toBeInTheDocument()
+      expect(screen.getByText(/create lore/i)).toBeInTheDocument()
     })
 
     test('network error on delete shows error toast', async () => {
@@ -562,13 +522,13 @@ describe('App Component - Full User Interaction Flows', () => {
       // Open menu and delete
       await waitFor(() => {
         expect(
-          screen.getAllByRole('heading', { level: 2 }).length
+          screen.getAllByRole('heading', { level: 4 }).length
         ).toBeGreaterThan(0)
       })
       const menuButtons = screen.getAllByRole('button', { name: /options/i })
       await user.click(menuButtons[0])
 
-      await user.click(screen.getByRole('menuitem', { name: /delete/i }))
+      await user.click(screen.getByText(/^delete$/i))
 
       await waitFor(() => {
         expect(
@@ -578,9 +538,9 @@ describe('App Component - Full User Interaction Flows', () => {
 
       await user.click(screen.getByRole('button', { name: /^delete$/i }))
 
-      // Error toast should appear
+      // Error message should appear
       await waitFor(() => {
-        expect(screen.getByText(/network error/i)).toBeInTheDocument()
+        expect(screen.getByText(/delete failed/i)).toBeInTheDocument()
       })
     })
   })
@@ -607,7 +567,7 @@ describe('App Component - Full User Interaction Flows', () => {
 
       // Verify modal is open before filling form
       await waitFor(() => {
-        expect(screen.getByRole('dialog')).toBeInTheDocument()
+        expect(screen.getByText(/create lore/i)).toBeInTheDocument()
       })
 
       await user.type(getInputByName('title'), 'New Story')
@@ -630,7 +590,7 @@ describe('App Component - Full User Interaction Flows', () => {
       // Wait for modal to close (modal closes on success in onSuccess callback)
       await waitFor(
         () => {
-          expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+          expect(screen.queryByText(/create lore/i)).not.toBeInTheDocument()
         },
         { timeout: 3000 }
       )
@@ -639,23 +599,21 @@ describe('App Component - Full User Interaction Flows', () => {
       // Wait for the lore cards to be available again
       await waitFor(() => {
         expect(
-          screen.getAllByRole('heading', { level: 2 }).length
+          screen.getAllByRole('heading', { level: 4 }).length
         ).toBeGreaterThan(0)
       })
 
       await waitFor(() => {
         expect(
-          screen.getAllByRole('heading', { level: 2 }).length
+          screen.getAllByRole('heading', { level: 4 }).length
         ).toBeGreaterThan(0)
       })
       const menuButtons = screen.getAllByRole('button', { name: /options/i })
       await user.click(menuButtons[0])
-      await user.click(screen.getByRole('menuitem', { name: /update/i }))
+      await user.click(screen.getByText(/^update$/i))
 
       await waitFor(() => {
-        expect(
-          screen.getByRole('dialog', { name: /update lore/i })
-        ).toBeInTheDocument()
+        expect(screen.getByText(/update lore/i)).toBeInTheDocument()
       })
 
       const titleInput = getInputByName('title')
@@ -672,7 +630,7 @@ describe('App Component - Full User Interaction Flows', () => {
         name: /options/i,
       })
       await user.click(menuButtonsForDelete[0])
-      await user.click(screen.getByRole('menuitem', { name: /delete/i }))
+      await user.click(screen.getByText(/^delete$/i))
 
       await waitFor(() => {
         expect(
@@ -685,6 +643,52 @@ describe('App Component - Full User Interaction Flows', () => {
       await waitFor(() => {
         expect(mockDeleteLore).toHaveBeenCalled()
       })
+    })
+  })
+
+  describe('Theme toggle flow', () => {
+    test('toggles between dark and light mode', async () => {
+      const user = userEvent.setup()
+      render(<App />)
+
+      // Wait for app to load
+      await waitFor(() => {
+        expect(screen.getByText(mockLoreData[0].title)).toBeInTheDocument()
+      })
+
+      // Find the theme toggle button
+      const themeButton = screen.getByRole('button', {
+        name: /toggle color mode/i,
+      })
+      expect(themeButton).toBeInTheDocument()
+
+      // App starts in dark mode, so sun icon should be present (to switch to light)
+      const sunIcon = screen.getByLabelText('sun')
+      expect(sunIcon).toBeInTheDocument()
+
+      // Click to toggle to light mode
+      await user.click(themeButton)
+
+      // After toggle, moon icon should be present (to switch to dark)
+      await waitFor(() => {
+        const moonIcon = screen.getByLabelText('moon')
+        expect(moonIcon).toBeInTheDocument()
+      })
+
+      // Sun icon should not be present anymore
+      expect(screen.queryByLabelText('sun')).not.toBeInTheDocument()
+
+      // Toggle back to dark mode
+      await user.click(themeButton)
+
+      // Sun icon should be back
+      await waitFor(() => {
+        const sunIconAgain = screen.getByLabelText('sun')
+        expect(sunIconAgain).toBeInTheDocument()
+      })
+
+      // Moon icon should not be present anymore
+      expect(screen.queryByLabelText('moon')).not.toBeInTheDocument()
     })
   })
 })

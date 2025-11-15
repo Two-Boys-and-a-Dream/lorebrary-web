@@ -3,10 +3,11 @@ import type { Lore } from '../api/API'
 /**
  * Default test data for Lore items
  * This can be imported in any test file without linting issues
+ * Note: Using high-value IDs to avoid collision with placeholder IDs (0-19) in loading states
  */
 export const mockLoreData: Lore[] = [
   {
-    _id: '1',
+    _id: 'lore-1001',
     title: 'The Ancient Prophecy',
     subtitle: 'A tale of destiny',
     game: 'Fantasy Quest',
@@ -15,7 +16,7 @@ export const mockLoreData: Lore[] = [
     updatedAt: '2025-01-02T00:00:00.000Z',
   },
   {
-    _id: '2',
+    _id: 'lore-1002',
     title: 'The Forgotten Temple',
     subtitle: 'Ruins of the old world',
     game: 'Adventure Chronicles',
@@ -24,7 +25,7 @@ export const mockLoreData: Lore[] = [
     updatedAt: '2025-01-03T00:00:00.000Z',
   },
   {
-    _id: '3',
+    _id: 'lore-1003',
     title: "The Dragon's Lair",
     subtitle: 'Where fire meets ice',
     game: 'Fantasy Quest',

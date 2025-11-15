@@ -1,10 +1,11 @@
 import './App.module.css'
-import { ChakraProvider } from '@chakra-ui/react'
+import { App as AntdApp, ConfigProvider, theme as antdTheme } from 'antd'
 import { HomePage } from './components/pages'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { theme } from './theme'
+import { purpleTheme } from './theme/theme'
 import { MainLayout } from './components/layouts'
+import { useState } from 'react'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -15,22 +16,25 @@ const queryClient = new QueryClient({
 })
 
 export function App() {
+  const [darkMode, setDarkMode] = useState(true)
+
   return (
-    <ChakraProvider
-      theme={theme}
-      toastOptions={{
-        defaultOptions: {
-          position: 'bottom',
-          isClosable: true,
-        },
+    <ConfigProvider
+      theme={{
+        ...purpleTheme,
+        algorithm: darkMode
+          ? antdTheme.darkAlgorithm
+          : antdTheme.defaultAlgorithm,
       }}
     >
-      <QueryClientProvider client={queryClient}>
-        <MainLayout>
-          <HomePage />
-        </MainLayout>
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-    </ChakraProvider>
+      <AntdApp>
+        <QueryClientProvider client={queryClient}>
+          <MainLayout darkMode={darkMode} setDarkMode={setDarkMode}>
+            <HomePage />
+          </MainLayout>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </AntdApp>
+    </ConfigProvider>
   )
 }

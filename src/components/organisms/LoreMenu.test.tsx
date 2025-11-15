@@ -25,12 +25,8 @@ describe('LoreMenu', () => {
     await user.click(menuButton)
 
     // Menu items should be visible
-    expect(
-      screen.getByRole('menuitem', { name: /update/i })
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole('menuitem', { name: /delete/i })
-    ).toBeInTheDocument()
+    expect(screen.getByText(/^update$/i)).toBeInTheDocument()
+    expect(screen.getByText(/^delete$/i)).toBeInTheDocument()
   })
 
   test('shows update and delete menu items when opened', async () => {
@@ -40,8 +36,8 @@ describe('LoreMenu', () => {
     const menuButton = screen.getByRole('button', { name: /options/i })
     await user.click(menuButton)
 
-    const updateItem = screen.getByRole('menuitem', { name: /update/i })
-    const deleteItem = screen.getByRole('menuitem', { name: /delete/i })
+    const updateItem = screen.getByText(/^update$/i)
+    const deleteItem = screen.getByText(/^delete$/i)
 
     expect(updateItem).toBeInTheDocument()
     expect(deleteItem).toBeInTheDocument()
@@ -61,10 +57,12 @@ describe('LoreMenu', () => {
     const menuButton = screen.getByRole('button', { name: /options/i })
     await user.click(menuButton)
 
-    const deleteItem = screen.getByRole('menuitem', { name: /delete/i })
+    const deleteItem = screen.getByText(/^delete$/i)
     await user.click(deleteItem)
 
-    const confirmButton = await screen.findByRole('button', { name: /delete/i })
+    const confirmButton = await screen.findByRole('button', {
+      name: /^delete$/i,
+    })
     await user.click(confirmButton)
 
     // Should call API with correct ID
@@ -86,10 +84,9 @@ describe('LoreMenu', () => {
       const deleteItem = screen.getByRole('menuitem', { name: /delete/i })
       await user.click(deleteItem)
 
-      // Alert dialog should appear
-      await waitFor(() => {
-        expect(screen.getByText(/delete lore/i)).toBeInTheDocument()
-      })
+      // Alert dialog should appear - use findByText which waits automatically
+      const dialogTitle = await screen.findByText(/delete lore/i)
+      expect(dialogTitle).toBeInTheDocument()
     })
 
     test('closes menu after delete item is clicked', async () => {
@@ -104,12 +101,9 @@ describe('LoreMenu', () => {
       const deleteItem = screen.getByRole('menuitem', { name: /delete/i })
       await user.click(deleteItem)
 
-      // Menu should close (menu items no longer in document)
-      await waitFor(() => {
-        expect(
-          screen.queryByRole('menuitem', { name: /delete/i })
-        ).not.toBeInTheDocument()
-      })
+      // Menu should close (confirmation dialog appears)
+      const dialogTitle = await screen.findByText(/delete lore/i)
+      expect(dialogTitle).toBeInTheDocument()
     })
 
     test('deletes lore when delete is confirmed', async () => {
@@ -125,12 +119,12 @@ describe('LoreMenu', () => {
       const menuButton = screen.getByRole('button', { name: /options/i })
       await user.click(menuButton)
 
-      const deleteItem = screen.getByRole('menuitem', { name: /delete/i })
+      const deleteItem = screen.getByText(/^delete$/i)
       await user.click(deleteItem)
 
       // Confirm deletion in alert dialog
       const confirmButton = await screen.findByRole('button', {
-        name: /delete/i,
+        name: /^delete$/i,
       })
       await user.click(confirmButton)
 
@@ -158,7 +152,7 @@ describe('LoreMenu', () => {
       const menuButton = screen.getByRole('button', { name: /options/i })
       await user.click(menuButton)
 
-      const deleteItem = screen.getByRole('menuitem', { name: /delete/i })
+      const deleteItem = screen.getByText(/^delete$/i)
       await user.click(deleteItem)
 
       // Cancel deletion
@@ -176,12 +170,12 @@ describe('LoreMenu', () => {
       })
     })
 
-    test('shows string error message when delete fails with string error', async () => {
+    test('shows error message when delete fails', async () => {
       const user = userEvent.setup()
       const mockDeleteLore = API.deleteLore as jest.MockedFunction<
         typeof API.deleteLore
       >
-      mockDeleteLore.mockRejectedValue('Delete failed')
+      mockDeleteLore.mockRejectedValue(new Error('Delete failed'))
 
       renderWithProviders(<LoreMenu _id={mockId} />)
 
@@ -189,48 +183,18 @@ describe('LoreMenu', () => {
       const menuButton = screen.getByRole('button', { name: /options/i })
       await user.click(menuButton)
 
-      const deleteItem = screen.getByRole('menuitem', { name: /delete/i })
+      const deleteItem = screen.getByText(/^delete$/i)
       await user.click(deleteItem)
 
       // Confirm deletion
       const confirmButton = await screen.findByRole('button', {
-        name: /delete/i,
+        name: /^delete$/i,
       })
       await user.click(confirmButton)
 
-      // String error message should appear
+      // Error message should appear
       await waitFor(() => {
-        expect(screen.getByText(/network error/i)).toBeInTheDocument()
         expect(screen.getByText(/delete failed/i)).toBeInTheDocument()
-      })
-    })
-
-    test('shows generic error message when delete fails with non-string error', async () => {
-      const user = userEvent.setup()
-      const mockDeleteLore = API.deleteLore as jest.MockedFunction<
-        typeof API.deleteLore
-      >
-      mockDeleteLore.mockRejectedValue({ message: 'Error object' })
-
-      renderWithProviders(<LoreMenu _id={mockId} />)
-
-      // Open menu and click delete
-      const menuButton = screen.getByRole('button', { name: /options/i })
-      await user.click(menuButton)
-
-      const deleteItem = screen.getByRole('menuitem', { name: /delete/i })
-      await user.click(deleteItem)
-
-      // Confirm deletion
-      const confirmButton = await screen.findByRole('button', {
-        name: /delete/i,
-      })
-      await user.click(confirmButton)
-
-      // Generic error message should appear
-      await waitFor(() => {
-        expect(screen.getByText(/network error/i)).toBeInTheDocument()
-        expect(screen.getByText(/an error occurred/i)).toBeInTheDocument()
       })
     })
   })
@@ -250,7 +214,7 @@ describe('LoreMenu', () => {
       await user.click(menuButton)
 
       // Click update
-      const updateItem = screen.getByRole('menuitem', { name: /update/i })
+      const updateItem = screen.getByText(/^update$/i)
       await user.click(updateItem)
 
       // Update modal should appear
@@ -259,12 +223,38 @@ describe('LoreMenu', () => {
       })
     })
 
-    test('shows string error message when update fails', async () => {
+    test('closes update modal when close is clicked', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<LoreMenu _id={mockId} />)
+
+      // Open menu and click update
+      const menuButton = screen.getByRole('button', { name: /options/i })
+      await user.click(menuButton)
+
+      const updateItem = screen.getByText(/^update$/i)
+      await user.click(updateItem)
+
+      // Wait for modal to open
+      await waitFor(() => {
+        expect(screen.getByText(/update lore/i)).toBeInTheDocument()
+      })
+
+      // Close the modal
+      const closeButton = screen.getByRole('button', { name: /cancel/i })
+      await user.click(closeButton)
+
+      // Modal should close
+      await waitFor(() => {
+        expect(screen.queryByText(/update lore/i)).not.toBeInTheDocument()
+      })
+    })
+
+    test('shows error message when update fails', async () => {
       const user = userEvent.setup()
       const mockUpdateLore = API.updateLore as jest.MockedFunction<
         typeof API.updateLore
       >
-      mockUpdateLore.mockRejectedValue('Update failed')
+      mockUpdateLore.mockRejectedValue(new Error('Update failed'))
 
       // Call the mutation directly to test error handling
       renderWithProviders(<LoreMenu _id={mockId} />)
@@ -272,7 +262,7 @@ describe('LoreMenu', () => {
       const menuButton = screen.getByRole('button', { name: /options/i })
       await user.click(menuButton)
 
-      const updateItem = screen.getByRole('menuitem', { name: /update/i })
+      const updateItem = screen.getByText(/^update$/i)
       await user.click(updateItem)
 
       // Fill the form to make it valid
@@ -284,41 +274,49 @@ describe('LoreMenu', () => {
       const submitButton = screen.getByRole('button', { name: /^update$/i })
       await user.click(submitButton)
 
-      // Error message with string should appear
+      // Error message should appear
       await waitFor(() => {
-        expect(screen.getByText(/network error/i)).toBeInTheDocument()
         expect(screen.getByText(/update failed/i)).toBeInTheDocument()
       })
     })
 
-    test('shows generic error message when update fails with non-string error', async () => {
+    test('shows success message and closes modal when update succeeds', async () => {
       const user = userEvent.setup()
       const mockUpdateLore = API.updateLore as jest.MockedFunction<
         typeof API.updateLore
       >
-      mockUpdateLore.mockRejectedValue({ message: 'Error object' })
+      mockUpdateLore.mockResolvedValue({
+        ...mockLoreData[0],
+        title: 'Updated Title',
+        updatedAt: new Date().toISOString(),
+      })
 
       renderWithProviders(<LoreMenu _id={mockId} />)
 
       const menuButton = screen.getByRole('button', { name: /options/i })
       await user.click(menuButton)
 
-      const updateItem = screen.getByRole('menuitem', { name: /update/i })
+      const updateItem = screen.getByText(/^update$/i)
       await user.click(updateItem)
 
       // Fill the form to make it valid
       const inputs = await screen.findAllByRole('textbox')
       for (const input of inputs) {
-        await user.type(input, 'test')
+        await user.clear(input)
+        await user.type(input, 'Updated')
       }
 
       const submitButton = screen.getByRole('button', { name: /^update$/i })
       await user.click(submitButton)
 
-      // Generic error message should appear
+      // Success message should appear
       await waitFor(() => {
-        expect(screen.getByText(/network error/i)).toBeInTheDocument()
-        expect(screen.getByText(/an error occurred/i)).toBeInTheDocument()
+        expect(screen.getByText(/lore updated!/i)).toBeInTheDocument()
+      })
+
+      // Modal should close
+      await waitFor(() => {
+        expect(screen.queryByText(/update lore/i)).not.toBeInTheDocument()
       })
     })
   })

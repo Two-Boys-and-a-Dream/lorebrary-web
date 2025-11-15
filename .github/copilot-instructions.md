@@ -2,9 +2,9 @@
 
 ## Project Overview
 
-React + TypeScript SPA for managing "Lore" items (game-related text snippets) with full CRUD operations. Built with Parcel bundler, Chakra UI for styling, and TanStack React Query for server state management.
+React + TypeScript SPA for managing "Lore" items (game-related text snippets) with full CRUD operations. Built with Parcel bundler, Ant Design (antd) for styling, and TanStack React Query for server state management.
 
-**Tech Stack**: React 19, TypeScript, Chakra UI v2, TanStack React Query v5, Parcel, Jest + Testing Library
+**Tech Stack**: React 19, TypeScript, Ant Design v5, TanStack React Query v5, Parcel, Jest + Testing Library
 
 **Key Architecture Pattern**: React Query acts as client-side cache. The `HomePage` fetches all lore and sets individual items in cache by ID (`['lore', _id]`). Child components like `LoreItem` read from this cache using `queryClient.getQueryData()`. This eliminates prop drilling while maintaining data consistency.
 
@@ -75,33 +75,32 @@ const data = queryClient.getQueryData<Lore>(['lore', _id])
 
 **Mutation Pattern**: All mutations (create/update/delete) must:
 
-1. Show toast on success/error
+1. Show message notification on success/error using `App.useApp()` hook
 2. Invalidate `['lore']` query on success (triggers HomePage refetch)
-3. Handle both string and non-string errors in `onError`
 
 ```typescript
+const { message } = App.useApp()
+
 const mutation = useMutation({
   mutationFn: API.deleteLore,
-  onError: (error: unknown) => {
-    toast({
-      title: 'Network error',
-      description: typeof error === 'string' ? error : 'An error occurred',
-      status: 'error',
-    })
+  onError: (error: Error) => {
+    message.error(error.message)
   },
   onSuccess: async () => {
-    toast({ title: 'Success', status: 'success' })
+    message.success('Lore deleted!')
     await queryClient.invalidateQueries({ queryKey: ['lore'], exact: true })
   },
 })
 ```
 
-## Styling with Chakra UI
+## Styling with Ant Design
 
-- All styling via Chakra components and props (minimal custom CSS)
-- Custom theme: `src/theme/theme.ts` (dark mode by default)
-- Toast position: `bottom`, always closable
-- Use responsive array syntax: `<Box w={[300, 400, 500]} />`
+- All styling via Ant Design components and props (minimal custom CSS)
+- Custom theme: `src/theme/theme.ts` (purple theme with dark/light mode support)
+- Dark mode managed by `ConfigProvider` with `theme.algorithm` (dark/light algorithms)
+- Use `App.useApp()` for message notifications, modals, and notifications (no `contextHolder` needed)
+- Use inline styles or Ant Design's `style` prop for component-specific styling
+- Theme switching: `antdTheme.darkAlgorithm` / `antdTheme.defaultAlgorithm`
 
 ## Testing Standards
 
@@ -112,14 +111,14 @@ const mutation = useMutation({
 - API module auto-mocked via `jest.mock('../../api')`
 - `jest.clearMocks: true` in config - **never** call `jest.clearAllMocks()` manually
 - Fake timers enabled globally with `advanceTimers: true`
-- `window.matchMedia` and `window.scrollTo` mocked for Chakra UI compatibility
+- `window.matchMedia`, `window.scrollTo`, and `window.getComputedStyle` mocked for Ant Design compatibility
 - `process.env.API_URL` set for tests
 
 **Test utilities** (`src/utils/testUtils.tsx`):
 
-- `renderWithProviders()` - Wraps components with QueryClient + ChakraProvider
-- `cleanupToasts()` - Removes Chakra toasts/modals between tests (call in `afterEach`)
+- `renderWithProviders()` - Wraps components with QueryClient + ConfigProvider + App (antd)
 - Creates fresh QueryClient per test with `retry: false` for fast failures
+- Includes `App` wrapper to enable `App.useApp()` hooks in tests
 
 ### API Mock Behavior (`src/api/__mocks__/index.ts`)
 
@@ -264,7 +263,7 @@ const mutation = useMutation({
 
 - Always handle loading and error states in components
 - Display user-friendly error messages
-- Use Chakra's `Alert` component for error messages
+- Use Ant Design's `Alert` component for error messages or `message.error()` for notifications
 
 ## Git & Commits
 
@@ -279,12 +278,13 @@ const mutation = useMutation({
 - Memoize callbacks passed to children with `useCallback`
 - Use code splitting with `React.lazy` for route-based code splitting
 - Avoid unnecessary re-renders
+- Ant Design components are already optimized - avoid wrapping in unnecessary memoization
 
 ## Accessibility
 
 - Use semantic HTML elements
 - Ensure all interactive elements are keyboard accessible
-- Use Chakra UI's built-in accessibility features
+- Use Ant Design's built-in accessibility features
 - Add ARIA labels where necessary
 - Test with screen readers when possible
 
@@ -308,7 +308,7 @@ export const useLore = () => {
 }
 ```
 
-### Form Handling with Chakra UI
+### Form Handling with Ant Design
 
 ```typescript
 const [formData, setFormData] = useState<NewLore>({
@@ -340,7 +340,7 @@ return <ItemList items={data} />
 - Don't forget to handle loading/error states
 - Don't test implementation details
 - Don't call `jest.clearAllMocks()` in tests (it's automatic)
-- Don't use inline styles when Chakra props are available
+- Don't use inline styles when Ant Design props are available
 - Don't commit console.log statements
 - Don't ignore TypeScript errors
 - Don't skip accessibility considerations
