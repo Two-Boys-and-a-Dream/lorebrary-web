@@ -15,6 +15,7 @@ export default function ThemeButton({
       onClick={toggleTheme}
       icon={darkMode ? <SunOutlined /> : <MoonOutlined />}
       aria-label="Toggle color mode"
+      title="Toggle color mode"
     />
   )
 }

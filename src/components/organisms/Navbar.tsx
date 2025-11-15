@@ -9,8 +9,7 @@ import { useState } from 'react'
 
 interface NavbarProps {
   darkMode: boolean
-  // eslint-disable-next-line no-unused-vars
-  setDarkMode: (darkMode: boolean) => void
+  setDarkMode: (_darkMode: boolean) => void
 }
 
 export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
@@ -60,6 +59,7 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
           onClick={onOpen}
           icon={<PlusOutlined />}
           aria-label="Add lore"
+          title="Add Lore"
         />
         <ThemeButton
           darkMode={darkMode}
