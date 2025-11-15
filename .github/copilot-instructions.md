@@ -75,30 +75,22 @@ const data = queryClient.getQueryData<Lore>(['lore', _id])
 
 **Mutation Pattern**: All mutations (create/update/delete) must:
 
-1. Show message notification on success/error using `message.useMessage()` hook
+1. Show message notification on success/error using `App.useApp()` hook
 2. Invalidate `['lore']` query on success (triggers HomePage refetch)
 
 ```typescript
-const [messageApi, contextHolder] = message.useMessage()
+const { message } = App.useApp()
 
 const mutation = useMutation({
   mutationFn: API.deleteLore,
   onError: (error: Error) => {
-    messageApi.error(error.message)
+    message.error(error.message)
   },
   onSuccess: async () => {
-    messageApi.success('Lore deleted!')
+    message.success('Lore deleted!')
     await queryClient.invalidateQueries({ queryKey: ['lore'], exact: true })
   },
 })
-
-// Don't forget to render the contextHolder in your component's JSX
-return (
-  <>
-    {contextHolder}
-    {/* Your component content */}
-  </>
-)
 ```
 
 ## Styling with Ant Design
@@ -106,7 +98,7 @@ return (
 - All styling via Ant Design components and props (minimal custom CSS)
 - Custom theme: `src/theme/theme.ts` (purple theme with dark/light mode support)
 - Dark mode managed by `ConfigProvider` with `theme.algorithm` (dark/light algorithms)
-- Use `message.useMessage()` for notifications (requires `contextHolder` in JSX)
+- Use `App.useApp()` for message notifications, modals, and notifications (no `contextHolder` needed)
 - Use inline styles or Ant Design's `style` prop for component-specific styling
 - Theme switching: `antdTheme.darkAlgorithm` / `antdTheme.defaultAlgorithm`
 
@@ -124,8 +116,9 @@ return (
 
 **Test utilities** (`src/utils/testUtils.tsx`):
 
-- `renderWithProviders()` - Wraps components with QueryClient + ConfigProvider (antd)
+- `renderWithProviders()` - Wraps components with QueryClient + ConfigProvider + App (antd)
 - Creates fresh QueryClient per test with `retry: false` for fast failures
+- Includes `App` wrapper to enable `App.useApp()` hooks in tests
 
 ### API Mock Behavior (`src/api/__mocks__/index.ts`)
 

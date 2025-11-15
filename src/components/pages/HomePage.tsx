@@ -37,8 +37,7 @@ export default function HomePage() {
     },
   })
   if (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error)
-    return <Text>{errorMessage}</Text>
+    return <Text>{error.message}</Text>
   }
 
   // Create "fake" cards to render skeletons for while loading

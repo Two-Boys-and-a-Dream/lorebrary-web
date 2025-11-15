@@ -1,4 +1,4 @@
-import { Flex, Button, message } from 'antd'
+import { App, Flex, Button } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { ThemeButton } from '../atoms'
 import LoreFormModal from './LoreFormModal'
@@ -15,7 +15,7 @@ interface NavbarProps {
 
 export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [messageApi, contextHolder] = message.useMessage()
+  const { message } = App.useApp()
 
   const queryClient = useQueryClient()
 
@@ -28,10 +28,10 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
   const mutation = useMutation({
     mutationFn: async (newLore: NewLore) => API.createLore(newLore),
     onError: (error: Error) => {
-      messageApi.error(error.message)
+      message.error(error.message)
     },
     onSuccess: async () => {
-      messageApi.success('Lore created!')
+      message.success('Lore created!')
       await queryClient.invalidateQueries({
         queryKey: ['lore'],
         exact: true,
@@ -44,7 +44,6 @@ export default function Navbar({ darkMode, setDarkMode }: NavbarProps) {
 
   return (
     <>
-      {contextHolder}
       <Flex
         style={{
           padding: '20px',

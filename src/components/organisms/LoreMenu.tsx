@@ -1,5 +1,5 @@
 import { MenuOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
-import { Dropdown, Button, message, type MenuProps } from 'antd'
+import { App, Dropdown, Button, type MenuProps } from 'antd'
 import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { API, type Lore } from '../../api'
@@ -31,7 +31,7 @@ interface LoreMenuProps {
 function LoreMenu({ _id }: LoreMenuProps) {
   const [updateModalOpen, setUpdateModalOpen] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
-  const [messageApi, contextHolder] = message.useMessage()
+  const { message } = App.useApp()
   const queryClient = useQueryClient()
   const data = queryClient.getQueryData<Lore>(['lore', _id])
 
@@ -39,10 +39,10 @@ function LoreMenu({ _id }: LoreMenuProps) {
   const updateMutation = useMutation({
     mutationFn: async (newLore: Lore) => API.updateLore(newLore),
     onError: (error: Error) => {
-      messageApi.error(error.message)
+      message.error(error.message)
     },
     onSuccess: async () => {
-      messageApi.success('Lore updated!')
+      message.success('Lore updated!')
       await queryClient.invalidateQueries({
         queryKey: ['lore', _id],
         exact: true,
@@ -55,10 +55,10 @@ function LoreMenu({ _id }: LoreMenuProps) {
   const deleteMutation = useMutation({
     mutationFn: () => API.deleteLore(_id!),
     onError: (error: Error) => {
-      messageApi.error(error.message)
+      message.error(error.message)
     },
     onSuccess: async () => {
-      messageApi.success('Lore deleted!')
+      message.success('Lore deleted!')
       await queryClient.invalidateQueries({
         queryKey: ['lore'],
         exact: true,
@@ -70,18 +70,14 @@ function LoreMenu({ _id }: LoreMenuProps) {
   })
 
   const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
-    if (key === 'update') {
-      setUpdateModalOpen(true)
-    } else if (key === 'delete') {
-      setDeleteModalOpen(true)
-    }
+    if (key === 'update') setUpdateModalOpen(true)
+    else setDeleteModalOpen(true)
   }
 
   const existingData = buildInitialFormData(data)
 
   return (
     <>
-      {contextHolder}
       <Dropdown menu={{ items, onClick: handleMenuClick }} trigger={['click']}>
         <Button icon={<MenuOutlined />} type="text" aria-label="Options" />
       </Dropdown>
@@ -92,7 +88,6 @@ function LoreMenu({ _id }: LoreMenuProps) {
         mutation={updateMutation}
         isOpen={updateModalOpen}
         onClose={() => setUpdateModalOpen(false)}
-        onOpen={() => setUpdateModalOpen(true)}
       />
       <AlertPopup
         headerText="Delete Lore"

@@ -223,6 +223,32 @@ describe('LoreMenu', () => {
       })
     })
 
+    test('closes update modal when close is clicked', async () => {
+      const user = userEvent.setup()
+      renderWithProviders(<LoreMenu _id={mockId} />)
+
+      // Open menu and click update
+      const menuButton = screen.getByRole('button', { name: /options/i })
+      await user.click(menuButton)
+
+      const updateItem = screen.getByText(/^update$/i)
+      await user.click(updateItem)
+
+      // Wait for modal to open
+      await waitFor(() => {
+        expect(screen.getByText(/update lore/i)).toBeInTheDocument()
+      })
+
+      // Close the modal
+      const closeButton = screen.getByRole('button', { name: /cancel/i })
+      await user.click(closeButton)
+
+      // Modal should close
+      await waitFor(() => {
+        expect(screen.queryByText(/update lore/i)).not.toBeInTheDocument()
+      })
+    })
+
     test('shows error message when update fails', async () => {
       const user = userEvent.setup()
       const mockUpdateLore = API.updateLore as jest.MockedFunction<
@@ -251,6 +277,46 @@ describe('LoreMenu', () => {
       // Error message should appear
       await waitFor(() => {
         expect(screen.getByText(/update failed/i)).toBeInTheDocument()
+      })
+    })
+
+    test('shows success message and closes modal when update succeeds', async () => {
+      const user = userEvent.setup()
+      const mockUpdateLore = API.updateLore as jest.MockedFunction<
+        typeof API.updateLore
+      >
+      mockUpdateLore.mockResolvedValue({
+        ...mockLoreData[0],
+        title: 'Updated Title',
+        updatedAt: new Date().toISOString(),
+      })
+
+      renderWithProviders(<LoreMenu _id={mockId} />)
+
+      const menuButton = screen.getByRole('button', { name: /options/i })
+      await user.click(menuButton)
+
+      const updateItem = screen.getByText(/^update$/i)
+      await user.click(updateItem)
+
+      // Fill the form to make it valid
+      const inputs = await screen.findAllByRole('textbox')
+      for (const input of inputs) {
+        await user.clear(input)
+        await user.type(input, 'Updated')
+      }
+
+      const submitButton = screen.getByRole('button', { name: /^update$/i })
+      await user.click(submitButton)
+
+      // Success message should appear
+      await waitFor(() => {
+        expect(screen.getByText(/lore updated!/i)).toBeInTheDocument()
+      })
+
+      // Modal should close
+      await waitFor(() => {
+        expect(screen.queryByText(/update lore/i)).not.toBeInTheDocument()
       })
     })
   })

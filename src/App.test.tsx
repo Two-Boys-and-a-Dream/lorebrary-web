@@ -649,4 +649,50 @@ describe('App Component - Full User Interaction Flows', () => {
       })
     })
   })
+
+  describe('Theme toggle flow', () => {
+    test('toggles between dark and light mode', async () => {
+      const user = userEvent.setup()
+      render(<App />)
+
+      // Wait for app to load
+      await waitFor(() => {
+        expect(screen.getByText(mockLoreData[0].title)).toBeInTheDocument()
+      })
+
+      // Find the theme toggle button
+      const themeButton = screen.getByRole('button', {
+        name: /toggle color mode/i,
+      })
+      expect(themeButton).toBeInTheDocument()
+
+      // App starts in dark mode, so sun icon should be present (to switch to light)
+      const sunIcon = screen.getByLabelText('sun')
+      expect(sunIcon).toBeInTheDocument()
+
+      // Click to toggle to light mode
+      await user.click(themeButton)
+
+      // After toggle, moon icon should be present (to switch to dark)
+      await waitFor(() => {
+        const moonIcon = screen.getByLabelText('moon')
+        expect(moonIcon).toBeInTheDocument()
+      })
+
+      // Sun icon should not be present anymore
+      expect(screen.queryByLabelText('sun')).not.toBeInTheDocument()
+
+      // Toggle back to dark mode
+      await user.click(themeButton)
+
+      // Sun icon should be back
+      await waitFor(() => {
+        const sunIconAgain = screen.getByLabelText('sun')
+        expect(sunIconAgain).toBeInTheDocument()
+      })
+
+      // Moon icon should not be present anymore
+      expect(screen.queryByLabelText('moon')).not.toBeInTheDocument()
+    })
+  })
 })
