@@ -50,7 +50,7 @@ export default function HomePage() {
   return (
     <Flex gap={40} wrap justify="center">
       {loreData.map(({ _id }) => {
-        return <LoreItem key={_id} _id={_id} isLoaded={isFetched} />
+        return <LoreItem key={_id} _id={_id} />
       })}
     </Flex>
   )

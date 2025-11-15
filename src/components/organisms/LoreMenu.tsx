@@ -38,13 +38,13 @@ function LoreMenu({ _id }: LoreMenuProps) {
   // Update mutation
   const updateMutation = useMutation({
     mutationFn: async (newLore: Lore) => API.updateLore(newLore),
-    onError: (error: Error) => {
+    onError: (error) => {
       message.error(error.message)
     },
     onSuccess: async () => {
       message.success('Lore updated!')
       await queryClient.invalidateQueries({
-        queryKey: ['lore', _id],
+        queryKey: ['lore'],
         exact: true,
       })
       setUpdateModalOpen(false)
@@ -54,7 +54,7 @@ function LoreMenu({ _id }: LoreMenuProps) {
   // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: () => API.deleteLore(_id!),
-    onError: (error: Error) => {
+    onError: (error) => {
       message.error(error.message)
     },
     onSuccess: async () => {
