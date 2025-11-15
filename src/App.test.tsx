@@ -415,7 +415,7 @@ describe('App Component - Full User Interaction Flows', () => {
   })
 
   describe('View lore details flow', () => {
-    test('complete flow: expand accordion to view context details', async () => {
+    test('complete flow: click info icon to view context details in popover', async () => {
       const user = userEvent.setup()
       render(<App />)
 
@@ -428,24 +428,20 @@ describe('App Component - Full User Interaction Flows', () => {
         expect(screen.getByText(firstDisplayedItem.text)).toBeInTheDocument()
       })
 
-      // Find the Context accordion buttons - get the first one
-      // Wait for the accordion to be rendered
-      const accordionButtons = await screen.findAllByRole('button', {
-        name: /context/i,
-      })
-      const accordionButton = accordionButtons[0]
+      // Find the info icon buttons - get the first one
+      const infoIcons = screen.getAllByLabelText('info-circle')
+      const firstInfoIcon = infoIcons[0]
 
       // Initially, detailed context (game, subtitle) should not be visible
-      // Ant Design Collapse uses aria-hidden to hide content
       const gameElements = screen.queryAllByText(
         `Game: ${firstDisplayedItem.game}`
       )
       expect(gameElements.length).toBe(0)
 
-      // Click accordion to expand
-      await user.click(accordionButton)
+      // Click info icon to open popover
+      await user.click(firstInfoIcon)
 
-      // Context details should now be visible (there may be multiple, check count changed)
+      // Context details should now be visible in the popover
       await waitFor(() => {
         const gameTexts = screen.getAllByText(
           `Game: ${firstDisplayedItem.game}`
