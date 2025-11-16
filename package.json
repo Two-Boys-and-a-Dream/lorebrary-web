@@ -5,7 +5,7 @@
   "description": "A template for React projects using Vite",
   "scripts": {
     "start": "vite",
-    "dev": "vite",
+    "dev": "vite --open",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "jest",
