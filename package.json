@@ -4,7 +4,7 @@
   "type": "module",
   "description": "A template for React projects using Vite",
   "scripts": {
-    "start": "vite --open --port 3000",
+    "start": "vite",
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
