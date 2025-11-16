@@ -2,9 +2,9 @@
 
 ## Project Overview
 
-React + TypeScript SPA for managing "Lore" items (game-related text snippets) with full CRUD operations. Built with Parcel bundler, Ant Design (antd) for styling, and TanStack React Query for server state management.
+React + TypeScript SPA for managing "Lore" items (game-related text snippets) with full CRUD operations. Built with Vite bundler, Ant Design (antd) for styling, and TanStack React Query for server state management.
 
-**Tech Stack**: React 19, TypeScript, Ant Design v5, TanStack React Query v5, Parcel, Jest + Testing Library
+**Tech Stack**: React 19, TypeScript, Ant Design v5, TanStack React Query v5, Vite, Jest + Testing Library
 
 **Key Architecture Pattern**: React Query acts as client-side cache. The `HomePage` fetches all lore and sets individual items in cache by ID (`['lore', _id]`). Child components like `LoreItem` read from this cache using `queryClient.getQueryData()`. This eliminates prop drilling while maintaining data consistency.
 
@@ -12,7 +12,10 @@ React + TypeScript SPA for managing "Lore" items (game-related text snippets) wi
 
 ### Build & Test Commands
 
-- **`npm start`** - Dev server on port 3000 (Parcel with HMR)
+- **`npm start`** - Dev server on port 3000 (Vite with HMR)
+- **`npm run dev`** - Alternative dev server command (Vite)
+- **`npm run build`** - Production build (TypeScript check + Vite build)
+- **`npm run preview`** - Preview production build locally
 - **`npm test`** - Run Jest tests (must pass 100% coverage on all metrics)
 - **`npm run verify`** - Pre-push validation (prettier, lint, type-check, tests)
 - **`npm run lint`** - ESLint with flat config (modern setup, see `docs/ESLINT_CONFIG.md`)
@@ -28,6 +31,16 @@ Git hooks run automatically via `simple-git-hooks`:
 ### Coverage Requirements
 
 Jest enforces **100% coverage** on all metrics (statements, branches, functions, lines). Tests must be comprehensive. See `jest.config.js` for thresholds.
+
+### Environment Variables
+
+Vite requires environment variables to be prefixed with `VITE_` to be exposed to client code:
+
+- **`VITE_API_URL`** - API endpoint URL (required)
+- Create a `.env` file in project root based on `.env.example`
+- Access in code using `import.meta.env.VITE_API_URL` (not `process.env`)
+- In tests, use `process.env.VITE_API_URL` (Jest runs in Node.js, not browser)
+- Never commit `.env` files - only `.env.example`
 
 ## Code Style & Standards
 
@@ -112,7 +125,7 @@ const mutation = useMutation({
 - `jest.clearMocks: true` in config - **never** call `jest.clearAllMocks()` manually
 - Fake timers enabled globally with `advanceTimers: true`
 - `window.matchMedia`, `window.scrollTo`, and `window.getComputedStyle` mocked for Ant Design compatibility
-- `process.env.API_URL` set for tests
+- `process.env.VITE_API_URL` set for tests (note: Jest uses `process.env`, app uses `import.meta.env`)
 
 **Test utilities** (`src/utils/testUtils.tsx`):
 

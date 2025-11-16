@@ -16,7 +16,7 @@ class API {
   #url: string
 
   constructor() {
-    this.#url = String(process.env.API_URL)
+    this.#url = String(import.meta.env.VITE_API_URL)
   }
 
   /**
