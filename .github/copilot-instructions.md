@@ -125,7 +125,7 @@ const mutation = useMutation({
 - `clearMocks: true` in config - **never** call `vi.clearAllMocks()` manually
 - Real timers enabled globally with `vi.useRealTimers()` for better animation handling
 - `window.matchMedia`, `window.scrollTo`, and `window.getComputedStyle` mocked for Ant Design compatibility
-- `process.env.VITE_API_URL` set for tests (note: Jest uses `process.env`, app uses `import.meta.env`)
+- `process.env.VITE_API_URL` set for tests (note: Vitest uses `process.env`, app uses `import.meta.env`)
 
 **Test utilities** (`src/utils/testUtils.tsx`):
 
