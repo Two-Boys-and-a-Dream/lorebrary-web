@@ -1,3 +1,4 @@
+import { describe, test, expect, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import { renderWithProviders } from '../../utils/testUtils'
 import HomePage from './HomePage'
@@ -5,11 +6,11 @@ import API, { type Lore } from '../../api/API'
 import { mockLoreData } from '../../utils/testData'
 
 // Mock the API module - the mock implementation is in src/api/__mocks__/index.ts
-jest.mock('../../api/API')
+vi.mock('../../api/API')
 
 describe('HomePage Component', () => {
   test('renders HomePage component successfully', async () => {
-    const mockGetAllLore = API.getAllLore as jest.MockedFunction<
+    const mockGetAllLore = API.getAllLore as vi.MockedFunction<
       typeof API.getAllLore
     >
 
@@ -22,7 +23,7 @@ describe('HomePage Component', () => {
   })
 
   test('displays loading skeletons initially', async () => {
-    const mockGetAllLore = API.getAllLore as jest.MockedFunction<
+    const mockGetAllLore = API.getAllLore as vi.MockedFunction<
       typeof API.getAllLore
     >
 
@@ -65,7 +66,7 @@ describe('HomePage Component', () => {
   })
 
   test('displays error message when API call fails', async () => {
-    const mockGetAllLore = API.getAllLore as jest.MockedFunction<
+    const mockGetAllLore = API.getAllLore as vi.MockedFunction<
       typeof API.getAllLore
     >
     const errorMessage = 'Failed to fetch lore'
@@ -80,7 +81,7 @@ describe('HomePage Component', () => {
   })
 
   test('handles empty lore list', async () => {
-    const mockGetAllLore = API.getAllLore as jest.MockedFunction<
+    const mockGetAllLore = API.getAllLore as vi.MockedFunction<
       typeof API.getAllLore
     >
     mockGetAllLore.mockResolvedValue([])
@@ -98,7 +99,7 @@ describe('HomePage Component', () => {
 
   test('sorts lore by creation date (newest first)', async () => {
     // Ensure mock is reset to default implementation
-    const mockGetAllLore = API.getAllLore as jest.MockedFunction<
+    const mockGetAllLore = API.getAllLore as vi.MockedFunction<
       typeof API.getAllLore
     >
     mockGetAllLore.mockResolvedValue(mockLoreData)
@@ -128,7 +129,7 @@ describe('HomePage Component', () => {
   })
 
   test('sorts lore with missing createdAt dates', async () => {
-    const mockGetAllLore = API.getAllLore as jest.MockedFunction<
+    const mockGetAllLore = API.getAllLore as vi.MockedFunction<
       typeof API.getAllLore
     >
 
