@@ -2,9 +2,9 @@ import { MenuOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { App, Dropdown, Button, type MenuProps } from 'antd'
 import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { API, type Lore } from '../../api'
+import API, { type Lore } from '../../api/API'
 import LoreFormModal from './LoreFormModal'
-import { AlertPopup } from '../molecules'
+import AlertPopup from '../molecules/AlertPopup'
 import { buildInitialFormData } from '../../utils/utils'
 
 const items: MenuProps['items'] = [

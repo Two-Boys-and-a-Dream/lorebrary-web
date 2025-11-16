@@ -1,8 +1,8 @@
 import { Card, Typography, Flex, Divider, Popover } from 'antd'
 import { useQueryClient } from '@tanstack/react-query'
 import { DateTime } from 'luxon'
-import { LoreMenu } from '../organisms'
-import type { Lore } from '../../api'
+import LoreMenu from '../organisms/LoreMenu'
+import type { Lore } from '../../api/API'
 import { InfoCircleOutlined } from '@ant-design/icons'
 
 const { Title, Text } = Typography

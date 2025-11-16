@@ -1,10 +1,10 @@
 import './App.css'
 import { App as AntdApp, ConfigProvider, theme as antdTheme } from 'antd'
-import { HomePage } from './components/pages'
+import HomePage from './components/pages/HomePage'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { purpleTheme } from './theme/theme'
-import { MainLayout } from './components/layouts'
+import MainLayout from './components/layouts/MainLayout'
 import { useState } from 'react'
 
 const queryClient = new QueryClient({

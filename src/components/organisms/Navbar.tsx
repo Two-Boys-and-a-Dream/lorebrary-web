@@ -1,9 +1,9 @@
 import { App, Flex, Button } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { ThemeButton } from '../atoms'
+import ThemeButton from '../atoms/ThemeButton'
 import LoreFormModal from './LoreFormModal'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
-import { API, type NewLore } from '../../api'
+import API, { type NewLore } from '../../api/API'
 import { buildInitialFormData } from '../../utils/utils'
 import { useState } from 'react'
 

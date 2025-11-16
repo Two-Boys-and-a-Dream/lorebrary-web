@@ -2,10 +2,10 @@ import { screen, waitFor } from '@testing-library/react'
 import { renderWithProviders } from '../../utils/testUtils'
 import userEvent from '@testing-library/user-event'
 import LoreMenu from './LoreMenu'
-import { API } from '../../api'
+import API from '../../api/API'
 import { mockLoreData } from '../../utils/testData'
 
-jest.mock('../../api')
+jest.mock('../../api/API')
 
 describe('LoreMenu', () => {
   const mockId = '1'

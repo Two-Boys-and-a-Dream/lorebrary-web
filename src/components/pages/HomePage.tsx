@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Flex, Typography } from 'antd'
-import { API, type Lore } from '../../api'
-import { LoreItem } from '../molecules'
+import API, { type Lore } from '../../api/API'
+import LoreItem from '../molecules/LoreItem'
 
 const { Text } = Typography
 

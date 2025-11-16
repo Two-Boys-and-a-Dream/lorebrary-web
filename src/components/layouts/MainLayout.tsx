@@ -1,5 +1,5 @@
 import { Layout } from 'antd'
-import { Navbar } from '../organisms'
+import Navbar from '../organisms/Navbar'
 import type { ReactNode } from 'react'
 
 interface MainLayoutProps {

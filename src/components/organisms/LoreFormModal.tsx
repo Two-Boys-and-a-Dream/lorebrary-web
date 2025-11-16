@@ -3,7 +3,7 @@ import { App, Button, Modal, Input, Flex, Typography } from 'antd'
 import { loreFieldsArr } from '../../utils/constants'
 import type { FormData } from '../../utils/utils'
 import type { UseMutationResult } from '@tanstack/react-query'
-import type { Lore, NewLore } from '../../api'
+import type { Lore, NewLore } from '../../api/API'
 
 const { TextArea } = Input
 const { Text } = Typography

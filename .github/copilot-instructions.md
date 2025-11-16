@@ -121,7 +121,7 @@ const mutation = useMutation({
 
 **Global test setup** (`__mocks__/setupTests.ts`):
 
-- API module auto-mocked via `jest.mock('../../api')`
+- API module auto-mocked via `jest.mock('../../api/API')`
 - `jest.clearMocks: true` in config - **never** call `jest.clearAllMocks()` manually
 - Fake timers enabled globally with `advanceTimers: true`
 - `window.matchMedia`, `window.scrollTo`, and `window.getComputedStyle` mocked for Ant Design compatibility
@@ -133,7 +133,7 @@ const mutation = useMutation({
 - Creates fresh QueryClient per test with `retry: false` for fast failures
 - Includes `App` wrapper to enable `App.useApp()` hooks in tests
 
-### API Mock Behavior (`src/api/__mocks__/index.ts`)
+### API Mock Behavior (`src/api/__mocks__/API.ts`)
 
 Default implementations:
 
@@ -155,11 +155,11 @@ mockAPI.mockRejectedValue('Network error')
 ```typescript
 import { screen, waitFor } from '@testing-library/react'
 import { renderWithProviders } from '../../utils/testUtils'
-import { API } from '../../api'
+import API from '../../api/API'
 import { mockLoreData } from '../../utils/testData'
 import MyComponent from './MyComponent'
 
-jest.mock('../../api')
+jest.mock('../../api/API')
 
 describe('MyComponent', () => {
   // NO jest.clearAllMocks() needed - automatic via jest.config.js

@@ -1,11 +1,11 @@
 import { screen, waitFor } from '@testing-library/react'
 import { renderWithProviders } from '../../utils/testUtils'
 import HomePage from './HomePage'
-import { API, type Lore } from '../../api'
+import API, { type Lore } from '../../api/API'
 import { mockLoreData } from '../../utils/testData'
 
 // Mock the API module - the mock implementation is in src/api/__mocks__/index.ts
-jest.mock('../../api')
+jest.mock('../../api/API')
 
 describe('HomePage Component', () => {
   test('renders HomePage component successfully', async () => {

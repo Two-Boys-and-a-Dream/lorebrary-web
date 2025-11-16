@@ -13,11 +13,11 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { App } from './App'
-import { API, type Lore, type NewLore } from './api'
+import API, { type Lore, type NewLore } from './api/API'
 import { mockLoreData } from './utils/testData'
 
 // Mock the API module
-jest.mock('./api')
+jest.mock('./api/API')
 
 // Helper function to get form inputs by name attribute
 const getInputByName = (name: string) => {

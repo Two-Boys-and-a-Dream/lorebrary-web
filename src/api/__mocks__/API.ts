@@ -2,7 +2,7 @@ import type { Lore, NewLore } from '../API'
 import { mockLoreData } from '../../utils/testData'
 
 // Mock implementation of the API class
-export const API = {
+const API = {
   getAllLore: jest.fn().mockResolvedValue(mockLoreData),
 
   createLore: jest
@@ -36,3 +36,5 @@ export const API = {
     return Promise.reject(new Error('Lore not found'))
   }),
 }
+
+export default API
