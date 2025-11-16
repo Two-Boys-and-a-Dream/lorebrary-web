@@ -1,3 +1,4 @@
+import { describe, test, expect, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import { renderWithProviders } from '../../utils/testUtils'
 import userEvent from '@testing-library/user-event'
@@ -5,7 +6,7 @@ import LoreMenu from './LoreMenu'
 import API from '../../api/API'
 import { mockLoreData } from '../../utils/testData'
 
-jest.mock('../../api/API')
+vi.mock('../../api/API')
 
 describe('LoreMenu', () => {
   const mockId = '1'
@@ -46,7 +47,7 @@ describe('LoreMenu', () => {
   test('passes correct _id to menu items', async () => {
     const user = userEvent.setup()
     const testId = '123'
-    const mockDeleteLore = API.deleteLore as jest.MockedFunction<
+    const mockDeleteLore = API.deleteLore as vi.MockedFunction<
       typeof API.deleteLore
     >
     mockDeleteLore.mockResolvedValue()
@@ -108,7 +109,7 @@ describe('LoreMenu', () => {
 
     test('deletes lore when delete is confirmed', async () => {
       const user = userEvent.setup()
-      const mockDeleteLore = API.deleteLore as jest.MockedFunction<
+      const mockDeleteLore = API.deleteLore as vi.MockedFunction<
         typeof API.deleteLore
       >
       mockDeleteLore.mockResolvedValue()
@@ -141,7 +142,7 @@ describe('LoreMenu', () => {
 
     test('cancels delete when cancel button is clicked', async () => {
       const user = userEvent.setup()
-      const mockDeleteLore = API.deleteLore as jest.MockedFunction<
+      const mockDeleteLore = API.deleteLore as vi.MockedFunction<
         typeof API.deleteLore
       >
       mockDeleteLore.mockResolvedValue()
@@ -172,7 +173,7 @@ describe('LoreMenu', () => {
 
     test('shows error message when delete fails', async () => {
       const user = userEvent.setup()
-      const mockDeleteLore = API.deleteLore as jest.MockedFunction<
+      const mockDeleteLore = API.deleteLore as vi.MockedFunction<
         typeof API.deleteLore
       >
       mockDeleteLore.mockRejectedValue(new Error('Delete failed'))
@@ -202,7 +203,7 @@ describe('LoreMenu', () => {
   describe('update functionality', () => {
     test('opens update modal when update is clicked', async () => {
       const user = userEvent.setup()
-      const mockGetLoreById = API.getLoreById as jest.MockedFunction<
+      const mockGetLoreById = API.getLoreById as vi.MockedFunction<
         typeof API.getLoreById
       >
       mockGetLoreById.mockResolvedValue(mockLoreData[0])
@@ -251,7 +252,7 @@ describe('LoreMenu', () => {
 
     test('shows error message when update fails', async () => {
       const user = userEvent.setup()
-      const mockUpdateLore = API.updateLore as jest.MockedFunction<
+      const mockUpdateLore = API.updateLore as vi.MockedFunction<
         typeof API.updateLore
       >
       mockUpdateLore.mockRejectedValue(new Error('Update failed'))
@@ -282,7 +283,7 @@ describe('LoreMenu', () => {
 
     test('shows success message and closes modal when update succeeds', async () => {
       const user = userEvent.setup()
-      const mockUpdateLore = API.updateLore as jest.MockedFunction<
+      const mockUpdateLore = API.updateLore as vi.MockedFunction<
         typeof API.updateLore
       >
       mockUpdateLore.mockResolvedValue({

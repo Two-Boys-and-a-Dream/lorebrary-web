@@ -4,9 +4,8 @@ import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
 import tanstackQuery from '@tanstack/eslint-plugin-query'
-import jest from 'eslint-plugin-jest'
+import vitest from 'eslint-plugin-vitest'
 import testingLibrary from 'eslint-plugin-testing-library'
-import jestDom from 'eslint-plugin-jest-dom'
 import prettier from 'eslint-config-prettier'
 import globals from 'globals'
 
@@ -123,17 +122,17 @@ export default [
     },
   },
 
-  // Jest setup files configuration
+  // Vitest setup files configuration
   {
-    files: ['**/__mocks__/**/*.js', '**/setupTests.js', '**/jest.setup.js'],
+    files: ['**/__mocks__/**/*.{js,ts}', '**/setupTests.{js,ts}'],
     languageOptions: {
       globals: {
-        ...globals.jest,
+        ...globals.node,
       },
     },
   },
 
-  // Jest and Testing Library configuration for test files
+  // Vitest and Testing Library configuration for test files
   {
     files: [
       '**/*.test.js',
@@ -146,19 +145,17 @@ export default [
       '**/*.spec.tsx',
     ],
     plugins: {
-      jest,
+      vitest,
       'testing-library': testingLibrary,
-      'jest-dom': jestDom,
     },
     languageOptions: {
       globals: {
-        ...globals.jest,
+        ...vitest.environments.env.globals,
       },
     },
     rules: {
-      ...jest.configs.recommended.rules,
+      ...vitest.configs.recommended.rules,
       ...testingLibrary.configs.react.rules,
-      ...jestDom.configs.recommended.rules,
     },
   },
 

@@ -4,7 +4,7 @@
 
 React + TypeScript SPA for managing "Lore" items (game-related text snippets) with full CRUD operations. Built with Vite bundler, Ant Design (antd) for styling, and TanStack React Query for server state management.
 
-**Tech Stack**: React 19, TypeScript, Ant Design v5, TanStack React Query v5, Vite, Jest + Testing Library
+**Tech Stack**: React 19, TypeScript, Ant Design v5, TanStack React Query v5, Vite, Vitest + Testing Library
 
 **Key Architecture Pattern**: React Query acts as client-side cache. The `HomePage` fetches all lore and sets individual items in cache by ID (`['lore', _id]`). Child components like `LoreItem` read from this cache using `queryClient.getQueryData()`. This eliminates prop drilling while maintaining data consistency.
 
@@ -16,7 +16,7 @@ React + TypeScript SPA for managing "Lore" items (game-related text snippets) wi
 - **`npm run dev`** - Alternative dev server command (Vite)
 - **`npm run build`** - Production build (TypeScript check + Vite build)
 - **`npm run preview`** - Preview production build locally
-- **`npm test`** - Run Jest tests (must pass 100% coverage on all metrics)
+- **`npm test`** - Run Vitest tests (must pass 100% coverage on all metrics)
 - **`npm run verify`** - Pre-push validation (prettier, lint, type-check, tests)
 - **`npm run lint`** - ESLint with flat config (modern setup, see `docs/ESLINT_CONFIG.md`)
 - **`npm run ts:check`** - TypeScript validation without emitting files
@@ -30,7 +30,7 @@ Git hooks run automatically via `simple-git-hooks`:
 
 ### Coverage Requirements
 
-Jest enforces **100% coverage** on all metrics (statements, branches, functions, lines). Tests must be comprehensive. See `jest.config.js` for thresholds.
+Jest enforces **100% coverage** on all metrics (statements, branches, functions, lines). Tests must be comprehensive. See `vite.config.ts` for thresholds.
 
 ### Environment Variables
 
@@ -39,7 +39,7 @@ Vite requires environment variables to be prefixed with `VITE_` to be exposed to
 - **`VITE_API_URL`** - API endpoint URL (required)
 - Create a `.env` file in project root based on `.env.example`
 - Access in code using `import.meta.env.VITE_API_URL` (not `process.env`)
-- In tests, use `process.env.VITE_API_URL` (Jest runs in Node.js, not browser)
+- In tests, use `process.env.VITE_API_URL` (Vitest runs in jsdom, not browser)
 - Never commit `.env` files - only `.env.example`
 
 ## Code Style & Standards
@@ -121,8 +121,8 @@ const mutation = useMutation({
 
 **Global test setup** (`__mocks__/setupTests.ts`):
 
-- API module auto-mocked via `jest.mock('../../api/API')`
-- `jest.clearMocks: true` in config - **never** call `jest.clearAllMocks()` manually
+- API module auto-mocked via `vi.mock('../../api/API')`
+- `clearMocks: true` in config - **never** call `vi.clearAllMocks()` manually
 - Fake timers enabled globally with `advanceTimers: true`
 - `window.matchMedia`, `window.scrollTo`, and `window.getComputedStyle` mocked for Ant Design compatibility
 - `process.env.VITE_API_URL` set for tests (note: Jest uses `process.env`, app uses `import.meta.env`)
@@ -146,7 +146,7 @@ Default implementations:
 Override when needed:
 
 ```typescript
-const mockAPI = API.getAllLore as jest.MockedFunction<typeof API.getAllLore>
+const mockAPI = API.getAllLore as vi.MockedFunction<typeof API.getAllLore>
 mockAPI.mockRejectedValue('Network error')
 ```
 
@@ -159,10 +159,10 @@ import API from '../../api/API'
 import { mockLoreData } from '../../utils/testData'
 import MyComponent from './MyComponent'
 
-jest.mock('../../api/API')
+vi.mock('../../api/API')
 
 describe('MyComponent', () => {
-  // NO jest.clearAllMocks() needed - automatic via jest.config.js
+  // NO vi.clearAllMocks() needed - automatic via vite.config.ts
 
   test('renders successfully', () => {
     renderWithProviders(<MyComponent />)
@@ -178,7 +178,7 @@ describe('MyComponent', () => {
   })
 
   test('handles string errors', async () => {
-    const mockAPI = API.getAllLore as jest.MockedFunction<typeof API.getAllLore>
+    const mockAPI = API.getAllLore as vi.MockedFunction<typeof API.getAllLore>
     mockAPI.mockRejectedValue('Network error')
     renderWithProviders(<MyComponent />)
     await waitFor(() => {
@@ -187,7 +187,7 @@ describe('MyComponent', () => {
   })
 
   test('handles non-string errors', async () => {
-    const mockAPI = API.getAllLore as jest.MockedFunction<typeof API.getAllLore>
+    const mockAPI = API.getAllLore as vi.MockedFunction<typeof API.getAllLore>
     mockAPI.mockRejectedValue({ code: 500 })
     renderWithProviders(<MyComponent />)
     await waitFor(() => {
@@ -352,7 +352,7 @@ return <ItemList items={data} />
 - Don't mutate state directly
 - Don't forget to handle loading/error states
 - Don't test implementation details
-- Don't call `jest.clearAllMocks()` in tests (it's automatic)
+- Don't call `vi.clearAllMocks()` in tests (it's automatic)
 - Don't use inline styles when Ant Design props are available
 - Don't commit console.log statements
 - Don't ignore TypeScript errors

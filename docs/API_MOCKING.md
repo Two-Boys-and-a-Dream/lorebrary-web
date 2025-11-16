@@ -2,7 +2,7 @@
 
 ## Overview
 
-The API module is globally mocked for all tests using Jest's automatic mocking feature. This provides consistent test data across all test files without needing to manually mock the API in each test.
+The API module is globally mocked for all tests using Vitest's automatic mocking feature. This provides consistent test data across all test files without needing to manually mock the API in each test.
 
 ## Files
 
@@ -14,9 +14,10 @@ The API module is globally mocked for all tests using Jest's automatic mocking f
 
 ### Basic Usage
 
-Simply call `jest.mock('../../api')` at the top of your test file, and the API will automatically use the mock implementation. Use `renderWithProviders` from `testUtils` to render components with all necessary providers:
+Simply call `vi.mock('../../api')` at the top of your test file, and the API will automatically use the mock implementation. Use `renderWithProviders` from `testUtils` to render components with all necessary providers:
 
 ```typescript
+import { describe, test, expect, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import { renderWithProviders } from '../../utils/testUtils'
 import { API } from '../../api'
@@ -24,10 +25,10 @@ import { mockLoreData } from '../../utils/testData'
 import MyComponent from './MyComponent'
 
 // Enable the mock
-jest.mock('../../api')
+vi.mock('../../api')
 
 describe('MyComponent', () => {
-  // NO jest.clearAllMocks() needed - automatic via jest.config.js
+  // Mock clearing handled automatically by clearMocks: true in vite.config.ts
 
   test('fetches and displays data', async () => {
     renderWithProviders(<MyComponent />)
@@ -58,7 +59,7 @@ You can override the default behavior for specific tests:
 
 ```typescript
 test('handles API error', async () => {
-  const mockGetAllLore = API.getAllLore as jest.MockedFunction<
+  const mockGetAllLore = API.getAllLore as vi.MockedFunction<
     typeof API.getAllLore
   >
   mockGetAllLore.mockRejectedValue(new Error('Network error'))
@@ -67,7 +68,7 @@ test('handles API error', async () => {
 })
 
 test('returns empty lore list', async () => {
-  const mockGetAllLore = API.getAllLore as jest.MockedFunction<
+  const mockGetAllLore = API.getAllLore as vi.MockedFunction<
     typeof API.getAllLore
   >
   mockGetAllLore.mockResolvedValue([])
@@ -123,8 +124,8 @@ This function:
 
 ## Best Practices
 
-1. **Don't clear mocks manually** - `jest.clearMocks: true` in config handles this automatically
+1. **Don't clear mocks manually** - `clearMocks: true` in vite.config.ts handles this automatically
 2. **Use renderWithProviders** - Always render components with `renderWithProviders` instead of plain `render`
 3. **Be specific** - Override mock behavior only for tests that need different responses
-4. **Use TypeScript** - Cast mocks with `as jest.MockedFunction<>` for type safety
+4. **Use TypeScript** - Cast mocks with `as vi.MockedFunction<>` for type safety
 5. **Import test data** - Use `mockLoreData` for consistency across tests

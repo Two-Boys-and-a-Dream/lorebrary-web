@@ -10,6 +10,7 @@
  * - UI interactions (modals, accordions, menus)
  */
 
+import { describe, test, expect, beforeEach, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { App } from './App'
@@ -17,7 +18,7 @@ import API, { type Lore, type NewLore } from './api/API'
 import { mockLoreData } from './utils/testData'
 
 // Mock the API module
-jest.mock('./api/API')
+vi.mock('./api/API')
 
 // Helper function to get form inputs by name attribute
 const getInputByName = (name: string) => {
@@ -32,13 +33,13 @@ describe('App Component - Full User Interaction Flows', () => {
   // Reset mock implementations before each test
   beforeEach(() => {
     // Reset getAllLore to return mockLoreData by default
-    const mockGetAllLore = API.getAllLore as jest.MockedFunction<
+    const mockGetAllLore = API.getAllLore as vi.MockedFunction<
       typeof API.getAllLore
     >
     mockGetAllLore.mockResolvedValue(mockLoreData)
 
     // Reset createLore to its default successful implementation
-    const mockCreateLore = API.createLore as jest.MockedFunction<
+    const mockCreateLore = API.createLore as vi.MockedFunction<
       typeof API.createLore
     >
     mockCreateLore.mockImplementation((newLore: NewLore) => {
@@ -52,7 +53,7 @@ describe('App Component - Full User Interaction Flows', () => {
     })
 
     // Reset updateLore to its default successful implementation
-    const mockUpdateLore = API.updateLore as jest.MockedFunction<
+    const mockUpdateLore = API.updateLore as vi.MockedFunction<
       typeof API.updateLore
     >
     mockUpdateLore.mockImplementation((updatedLore: Lore) => {
@@ -63,7 +64,7 @@ describe('App Component - Full User Interaction Flows', () => {
     })
 
     // Reset deleteLore to its default successful implementation
-    const mockDeleteLore = API.deleteLore as jest.MockedFunction<
+    const mockDeleteLore = API.deleteLore as vi.MockedFunction<
       typeof API.deleteLore
     >
     mockDeleteLore.mockResolvedValue(undefined)
@@ -104,7 +105,7 @@ describe('App Component - Full User Interaction Flows', () => {
   describe('Create lore flow', () => {
     test('complete flow: open modal, fill form, create lore, see new item', async () => {
       const user = userEvent.setup()
-      const mockCreateLore = API.createLore as jest.MockedFunction<
+      const mockCreateLore = API.createLore as vi.MockedFunction<
         typeof API.createLore
       >
 
@@ -208,7 +209,7 @@ describe('App Component - Full User Interaction Flows', () => {
 
     test('cancellation flow: open modal, fill form, close without saving', async () => {
       const user = userEvent.setup()
-      const mockCreateLore = API.createLore as jest.MockedFunction<
+      const mockCreateLore = API.createLore as vi.MockedFunction<
         typeof API.createLore
       >
 
@@ -239,7 +240,7 @@ describe('App Component - Full User Interaction Flows', () => {
   describe('Update lore flow', () => {
     test('complete flow: open menu, click update, modify fields, save, see changes', async () => {
       const user = userEvent.setup()
-      const mockUpdateLore = API.updateLore as jest.MockedFunction<
+      const mockUpdateLore = API.updateLore as vi.MockedFunction<
         typeof API.updateLore
       >
 
@@ -308,7 +309,7 @@ describe('App Component - Full User Interaction Flows', () => {
   describe('Delete lore flow', () => {
     test('complete flow: open menu, click delete, confirm, see item removed', async () => {
       const user = userEvent.setup()
-      const mockDeleteLore = API.deleteLore as jest.MockedFunction<
+      const mockDeleteLore = API.deleteLore as vi.MockedFunction<
         typeof API.deleteLore
       >
 
@@ -366,7 +367,7 @@ describe('App Component - Full User Interaction Flows', () => {
 
     test('cancellation flow: open delete dialog, cancel', async () => {
       const user = userEvent.setup()
-      const mockDeleteLore = API.deleteLore as jest.MockedFunction<
+      const mockDeleteLore = API.deleteLore as vi.MockedFunction<
         typeof API.deleteLore
       >
 
@@ -457,7 +458,7 @@ describe('App Component - Full User Interaction Flows', () => {
 
   describe('Error handling flows', () => {
     test('network error on initial load shows error message', async () => {
-      const mockGetAllLore = API.getAllLore as jest.MockedFunction<
+      const mockGetAllLore = API.getAllLore as vi.MockedFunction<
         typeof API.getAllLore
       >
       mockGetAllLore.mockRejectedValue(new Error('Network connection failed'))
@@ -476,7 +477,7 @@ describe('App Component - Full User Interaction Flows', () => {
 
     test('error on create shows specific error message', async () => {
       const user = userEvent.setup()
-      const mockCreateLore = API.createLore as jest.MockedFunction<
+      const mockCreateLore = API.createLore as vi.MockedFunction<
         typeof API.createLore
       >
       mockCreateLore.mockRejectedValue(new Error('Failed to create'))
@@ -508,7 +509,7 @@ describe('App Component - Full User Interaction Flows', () => {
 
     test('network error on delete shows error toast', async () => {
       const user = userEvent.setup()
-      const mockDeleteLore = API.deleteLore as jest.MockedFunction<
+      const mockDeleteLore = API.deleteLore as vi.MockedFunction<
         typeof API.deleteLore
       >
       mockDeleteLore.mockRejectedValue(new Error('Delete failed'))
@@ -548,10 +549,10 @@ describe('App Component - Full User Interaction Flows', () => {
   describe('Multiple operations flow', () => {
     test('create, update, and delete lore items in sequence', async () => {
       const user = userEvent.setup()
-      const mockUpdateLore = API.updateLore as jest.MockedFunction<
+      const mockUpdateLore = API.updateLore as vi.MockedFunction<
         typeof API.updateLore
       >
-      const mockDeleteLore = API.deleteLore as jest.MockedFunction<
+      const mockDeleteLore = API.deleteLore as vi.MockedFunction<
         typeof API.deleteLore
       >
 

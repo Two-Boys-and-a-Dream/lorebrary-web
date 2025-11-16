@@ -1,10 +1,11 @@
+import { describe, test, expect, vi } from 'vitest'
 import { screen } from '@testing-library/react'
 import { renderWithProviders } from '../../utils/testUtils'
 import userEvent from '@testing-library/user-event'
 import ThemeButton from './ThemeButton'
 
 describe('ThemeButton', () => {
-  const mockToggleTheme = jest.fn()
+  const mockToggleTheme = vi.fn()
 
   test('renders successfully', () => {
     renderWithProviders(<ThemeButton darkMode toggleTheme={mockToggleTheme} />)
@@ -22,7 +23,7 @@ describe('ThemeButton', () => {
 
   test('toggles color mode when clicked', async () => {
     const user = userEvent.setup()
-    const toggleFn = jest.fn()
+    const toggleFn = vi.fn()
     renderWithProviders(<ThemeButton darkMode toggleTheme={toggleFn} />)
 
     const button = screen.getByRole('button', { name: /toggle color mode/i })
