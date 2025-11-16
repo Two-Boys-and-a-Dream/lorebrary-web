@@ -4,7 +4,6 @@
   "type": "module",
   "description": "A template for React projects using Vite",
   "scripts": {
-    "start": "serve dist",
     "dev": "vite --open",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
@@ -40,8 +39,7 @@
     "axios": "^1.13.2",
     "luxon": "^3.7.2",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "serve": "^14.2.5"
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.28.5",
