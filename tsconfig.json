@@ -19,7 +19,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "isolatedModules": true,
-    "types": ["node", "jest", "vite/client"]
+    "types": ["node", "vite/client", "vitest/globals"]
   },
   "include": ["src/**/*", "__mocks__/setupTests.ts", "vite.config.ts"],
   "exclude": ["node_modules", "dist", "coverage"]

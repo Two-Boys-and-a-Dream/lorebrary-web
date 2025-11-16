@@ -1,10 +1,11 @@
+import { describe, test, expect, vi } from 'vitest'
 import axios from 'axios'
 import API, { type Lore, type NewLore } from './API'
 import { mockLoreData } from '../utils/testData'
 
 // Mock axios
-jest.mock('axios')
-const mockedAxios = axios as jest.MockedFunction<typeof axios>
+vi.mock('axios')
+const mockedAxios = vi.mocked(axios)
 
 describe('API', () => {
   describe('getAllLore', () => {
