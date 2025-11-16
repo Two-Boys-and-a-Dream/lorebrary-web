@@ -1,5 +1,5 @@
 // This file is used to setup test types for TypeScript
-import { expect, vi, afterEach } from 'vitest'
+import { expect, vi, afterEach, beforeAll } from 'vitest'
 import { cleanup } from '@testing-library/react'
 import * as matchers from '@testing-library/jest-dom/matchers'
 
@@ -45,4 +45,30 @@ Object.defineProperty(window, 'getComputedStyle', {
   })),
 })
 
-vi.useFakeTimers({ shouldAdvanceTime: true })
+// Configure Ant Design to disable animations in tests
+// This prevents act() warnings from animation components
+beforeAll(() => {
+  // Disable CSS animations
+  const style = document.createElement('style')
+  style.innerHTML = `
+    * {
+      animation-duration: 0s !important;
+      animation-delay: 0s !important;
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
+    }
+  `
+  document.head.appendChild(style)
+
+  // Mock requestAnimationFrame to execute immediately
+  global.requestAnimationFrame = (cb: FrameRequestCallback) => {
+    cb(0)
+    return 0
+  }
+
+  // Mock cancelAnimationFrame
+  global.cancelAnimationFrame = () => {}
+})
+
+// Use real timers for better animation handling
+vi.useRealTimers()
