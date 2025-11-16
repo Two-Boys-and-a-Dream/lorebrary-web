@@ -9,10 +9,10 @@ import { mockLoreData } from '../../utils/testData'
 vi.mock('../../api/API')
 
 describe('LoreMenu', () => {
-  const mockId = '1'
+  const mockLore = mockLoreData[0]
 
   test('renders hamburger menu button', () => {
-    renderWithProviders(<LoreMenu id={mockId} />)
+    renderWithProviders(<LoreMenu lore={mockLore} />)
 
     const menuButton = screen.getByRole('button', { name: /options/i })
     expect(menuButton).toBeInTheDocument()
@@ -20,7 +20,7 @@ describe('LoreMenu', () => {
 
   test('opens menu when hamburger button is clicked', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<LoreMenu id={mockId} />)
+    renderWithProviders(<LoreMenu lore={mockLore} />)
 
     const menuButton = screen.getByRole('button', { name: /options/i })
     await user.click(menuButton)
@@ -32,7 +32,7 @@ describe('LoreMenu', () => {
 
   test('shows update and delete menu items when opened', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<LoreMenu id={mockId} />)
+    renderWithProviders(<LoreMenu lore={mockLore} />)
 
     const menuButton = screen.getByRole('button', { name: /options/i })
     await user.click(menuButton)
@@ -46,13 +46,13 @@ describe('LoreMenu', () => {
 
   test('passes correct id to menu items', async () => {
     const user = userEvent.setup()
-    const testId = '123'
+    const testLore = { ...mockLoreData[0], id: '123' }
     const mockDeleteLore = API.deleteLore as vi.MockedFunction<
       typeof API.deleteLore
     >
     mockDeleteLore.mockResolvedValue()
 
-    renderWithProviders(<LoreMenu id={testId} />)
+    renderWithProviders(<LoreMenu lore={testLore} />)
 
     // Open menu and delete
     const menuButton = screen.getByRole('button', { name: /options/i })
@@ -68,14 +68,14 @@ describe('LoreMenu', () => {
 
     // Should call API with correct ID
     await waitFor(() => {
-      expect(mockDeleteLore).toHaveBeenCalledWith(testId)
+      expect(mockDeleteLore).toHaveBeenCalledWith(testLore.id)
     })
   })
 
   describe('delete functionality', () => {
     test('opens delete alert dialog when delete is clicked', async () => {
       const user = userEvent.setup()
-      renderWithProviders(<LoreMenu id={mockId} />)
+      renderWithProviders(<LoreMenu lore={mockLore} />)
 
       // Open menu
       const menuButton = screen.getByRole('button', { name: /options/i })
@@ -92,7 +92,7 @@ describe('LoreMenu', () => {
 
     test('closes menu after delete item is clicked', async () => {
       const user = userEvent.setup()
-      renderWithProviders(<LoreMenu id={mockId} />)
+      renderWithProviders(<LoreMenu lore={mockLore} />)
 
       // Open menu
       const menuButton = screen.getByRole('button', { name: /options/i })
@@ -114,7 +114,7 @@ describe('LoreMenu', () => {
       >
       mockDeleteLore.mockResolvedValue()
 
-      renderWithProviders(<LoreMenu id={mockId} />)
+      renderWithProviders(<LoreMenu lore={mockLore} />)
 
       // Open menu and click delete
       const menuButton = screen.getByRole('button', { name: /options/i })
@@ -131,7 +131,7 @@ describe('LoreMenu', () => {
 
       // API should be called
       await waitFor(() => {
-        expect(mockDeleteLore).toHaveBeenCalledWith(mockId)
+        expect(mockDeleteLore).toHaveBeenCalledWith(mockLore.id)
       })
 
       // Success message should appear
@@ -147,7 +147,7 @@ describe('LoreMenu', () => {
       >
       mockDeleteLore.mockResolvedValue()
 
-      renderWithProviders(<LoreMenu id={mockId} />)
+      renderWithProviders(<LoreMenu lore={mockLore} />)
 
       // Open menu and click delete
       const menuButton = screen.getByRole('button', { name: /options/i })
@@ -178,7 +178,7 @@ describe('LoreMenu', () => {
       >
       mockDeleteLore.mockRejectedValue(new Error('Delete failed'))
 
-      renderWithProviders(<LoreMenu id={mockId} />)
+      renderWithProviders(<LoreMenu lore={mockLore} />)
 
       // Open menu and click delete
       const menuButton = screen.getByRole('button', { name: /options/i })
@@ -208,7 +208,7 @@ describe('LoreMenu', () => {
       >
       mockGetLoreById.mockResolvedValue(mockLoreData[0])
 
-      renderWithProviders(<LoreMenu id={mockId} />)
+      renderWithProviders(<LoreMenu lore={mockLore} />)
 
       // Open menu
       const menuButton = screen.getByRole('button', { name: /options/i })
@@ -226,7 +226,7 @@ describe('LoreMenu', () => {
 
     test('closes update modal when close is clicked', async () => {
       const user = userEvent.setup()
-      renderWithProviders(<LoreMenu id={mockId} />)
+      renderWithProviders(<LoreMenu lore={mockLore} />)
 
       // Open menu and click update
       const menuButton = screen.getByRole('button', { name: /options/i })
@@ -258,7 +258,7 @@ describe('LoreMenu', () => {
       mockUpdateLore.mockRejectedValue(new Error('Update failed'))
 
       // Call the mutation directly to test error handling
-      renderWithProviders(<LoreMenu id={mockId} />)
+      renderWithProviders(<LoreMenu lore={mockLore} />)
 
       const menuButton = screen.getByRole('button', { name: /options/i })
       await user.click(menuButton)
@@ -292,7 +292,7 @@ describe('LoreMenu', () => {
         updatedAt: new Date().toISOString(),
       })
 
-      renderWithProviders(<LoreMenu id={mockId} />)
+      renderWithProviders(<LoreMenu lore={mockLore} />)
 
       const menuButton = screen.getByRole('button', { name: /options/i })
       await user.click(menuButton)

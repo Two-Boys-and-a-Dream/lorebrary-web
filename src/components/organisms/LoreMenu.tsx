@@ -1,7 +1,7 @@
 import { MenuOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { App, Dropdown, Button, type MenuProps } from 'antd'
 import { useState } from 'react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import API from '../../api/API'
 import type { Lore } from '../../types/data'
 import LoreFormModal from './LoreFormModal'
@@ -22,21 +22,18 @@ const items: MenuProps['items'] = [
 ]
 
 interface LoreMenuProps {
-  id?: string
+  lore?: Lore
 }
 
 /**
  * Hamburger menu on each LoreItem that gives
  * Update/Delete functionality
  */
-function LoreMenu({ id }: LoreMenuProps) {
+function LoreMenu({ lore }: LoreMenuProps) {
   const [updateModalOpen, setUpdateModalOpen] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const { message } = App.useApp()
   const queryClient = useQueryClient()
-  const { data } = useQuery<Lore>({
-    queryKey: ['lore', id],
-  })
 
   // Update mutation
   const updateMutation = useMutation({
@@ -47,7 +44,7 @@ function LoreMenu({ id }: LoreMenuProps) {
     onSuccess: async () => {
       message.success('Lore updated!')
       await queryClient.invalidateQueries({
-        queryKey: ['lore', id],
+        queryKey: ['lore'],
       })
       setUpdateModalOpen(false)
     },
@@ -55,7 +52,7 @@ function LoreMenu({ id }: LoreMenuProps) {
 
   // Delete mutation
   const deleteMutation = useMutation({
-    mutationFn: () => API.deleteLore(id!),
+    mutationFn: () => API.deleteLore(String(lore?.id)),
     onError: (error) => {
       message.error(error.message)
     },
@@ -75,7 +72,7 @@ function LoreMenu({ id }: LoreMenuProps) {
     else setDeleteModalOpen(true)
   }
 
-  const existingData = buildInitialFormData(data)
+  const existingData = buildInitialFormData(lore)
 
   return (
     <>
@@ -83,8 +80,8 @@ function LoreMenu({ id }: LoreMenuProps) {
         <Button icon={<MenuOutlined />} type="text" aria-label="Options" />
       </Dropdown>
       <LoreFormModal
-        key={updateModalOpen ? id : 'closed'}
-        id={id}
+        key={updateModalOpen ? lore?.id : 'closed'}
+        id={lore?.id}
         initialFormData={existingData}
         mutation={updateMutation}
         isOpen={updateModalOpen}
