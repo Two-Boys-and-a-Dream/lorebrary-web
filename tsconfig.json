@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
     "module": "ESNext",
     "moduleResolution": "bundler",
@@ -18,8 +19,8 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "isolatedModules": true,
-    "types": ["node", "jest"]
+    "types": ["node", "jest", "vite/client"]
   },
-  "include": ["src/**/*", "__mocks__/setupTests.ts"],
+  "include": ["src/**/*", "__mocks__/setupTests.ts", "vite.config.ts"],
   "exclude": ["node_modules", "dist", "coverage"]
 }
