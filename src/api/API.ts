@@ -50,35 +50,35 @@ class API {
    * Returns all lore in database
    */
   async getAllLore(): Promise<Lore[]> {
-    return this.#axiosHandler<Lore[]>('lore')
+    return this.#axiosHandler<Lore[]>('/lore')
   }
 
   /**
    * Creates new lore in database
    */
   async createLore(newLore: NewLore): Promise<Lore> {
-    return this.#axiosHandler<Lore>('lore', { method: 'post', data: newLore })
+    return this.#axiosHandler<Lore>('/lore', { method: 'post', data: newLore })
   }
 
   /**
    * Deletes lore by _id in database
    */
   async deleteLore(_id: string): Promise<void> {
-    return this.#axiosHandler<void>(`lore/${_id}`, { method: 'delete' })
+    return this.#axiosHandler<void>(`/lore/${_id}`, { method: 'delete' })
   }
 
   /**
    * Updates lore by _id
    */
   async updateLore(updatedLore: Lore): Promise<Lore> {
-    return this.#axiosHandler<Lore>('lore/update', {
+    return this.#axiosHandler<Lore>('/lore/update', {
       method: 'post',
       data: updatedLore,
     })
   }
 
   async getLoreById(_id: string): Promise<Lore> {
-    return this.#axiosHandler<Lore>(`lore/${_id}`)
+    return this.#axiosHandler<Lore>(`/lore/${_id}`)
   }
 }
 

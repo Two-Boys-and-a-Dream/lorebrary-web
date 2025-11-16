@@ -24,6 +24,7 @@ export default {
     'src/**/{!(index),}.{js,ts,tsx}',
     '!src/utils/testUtils.tsx',
     '!src/vite-env.d.ts',
+    '!src/types/**',
   ],
 
   // The directory where Jest should output its coverage files

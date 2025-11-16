@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 
 // Set up environment variables for tests
 // Note: In tests, we use process.env but in app code we use import.meta.env
-process.env.VITE_API_URL = 'https://api.example.com/'
+process.env.VITE_API_URL = 'https://api.example.com'
 
 // Mock window.matchMedia for components that use media queries
 Object.defineProperty(window, 'matchMedia', {
