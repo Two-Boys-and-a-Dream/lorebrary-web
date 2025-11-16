@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { Flex, Typography } from 'antd'
 import API from '../../api/API'
 import LoreItem from '../molecules/LoreItem'
@@ -6,10 +6,9 @@ import { type Lore } from '../../types/data'
 
 const { Text } = Typography
 
-type LoreOrPlaceholder = Pick<Lore, 'id'> | undefined
+type LoreOrPlaceholder = Lore | undefined
 
 export default function HomePage() {
-  const queryClient = useQueryClient()
   const {
     data = [],
     isFetched,
@@ -27,13 +26,6 @@ export default function HomePage() {
         return dateB - dateA
       })
 
-      /**
-       * Set each individual lore in query cache by id
-       */
-      sortedLore.forEach((element) =>
-        queryClient.setQueryData(['lore', element.id], element)
-      )
-
       return sortedLore
     },
   })
@@ -45,7 +37,7 @@ export default function HomePage() {
   // Create "fake" cards to render skeletons for while loading
   const loreData: LoreOrPlaceholder[] = !isFetched
     ? Array.from({ length: 20 }, () => undefined)
-    : data.map((lore) => ({ id: lore.id }))
+    : data
 
   return (
     <Flex gap={40} wrap justify="center">
@@ -53,7 +45,7 @@ export default function HomePage() {
         <Text>No lore entries found. Create the first one!</Text>
       )}
       {loreData.map((item, index) => {
-        return <LoreItem key={item?.id || index} id={item?.id} />
+        return <LoreItem key={item?.id || index} lore={item} />
       })}
     </Flex>
   )

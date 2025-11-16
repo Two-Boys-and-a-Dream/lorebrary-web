@@ -1,27 +1,20 @@
 import { Card, Typography, Flex, Divider, Popover } from 'antd'
-import { useQuery } from '@tanstack/react-query'
 import LoreMenu from '../organisms/LoreMenu'
 import type { Lore } from '../../types/data'
 import { InfoCircleOutlined } from '@ant-design/icons'
-import API from '../../api/API'
 
 const { Title, Text } = Typography
 
 interface LoreItemProps {
-  id?: string
+  lore?: Lore
 }
 
-export default function LoreItem({ id }: LoreItemProps) {
-  const { data } = useQuery<Lore>({
-    queryKey: ['lore', id],
-    queryFn: () => API.getLoreById(id!),
-    enabled: Boolean(id),
-  })
-  const { title, subtitle, game, createdAt, text } = data || {}
+export default function LoreItem({ lore }: LoreItemProps) {
+  const { title, subtitle, game, createdAt, text } = lore || {}
 
   return (
     <Card
-      loading={!data}
+      loading={!lore}
       style={{ width: 400, minHeight: 250 }}
       title={
         <Title
@@ -59,7 +52,7 @@ export default function LoreItem({ id }: LoreItemProps) {
           >
             <InfoCircleOutlined />
           </Popover>
-          <LoreMenu id={id} aria-label="Lore options" />
+          <LoreMenu lore={lore} aria-label="Lore options" />
         </Flex>
       }
     >
