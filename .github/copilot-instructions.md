@@ -123,7 +123,7 @@ const mutation = useMutation({
 
 - API module auto-mocked via `vi.mock('../../api/API')`
 - `clearMocks: true` in config - **never** call `vi.clearAllMocks()` manually
-- Fake timers enabled globally with `advanceTimers: true`
+- Real timers enabled globally with `vi.useRealTimers()` for better animation handling
 - `window.matchMedia`, `window.scrollTo`, and `window.getComputedStyle` mocked for Ant Design compatibility
 - `process.env.VITE_API_URL` set for tests (note: Jest uses `process.env`, app uses `import.meta.env`)
 
