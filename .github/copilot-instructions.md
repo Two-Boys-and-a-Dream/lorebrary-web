@@ -30,7 +30,7 @@ Git hooks run automatically via `simple-git-hooks`:
 
 ### Coverage Requirements
 
-Jest enforces **100% coverage** on all metrics (statements, branches, functions, lines). Tests must be comprehensive. See `vite.config.ts` for thresholds.
+Vitest enforces **100% coverage** on all metrics (statements, branches, functions, lines). Tests must be comprehensive. See `vite.config.ts` for thresholds.
 
 ### Environment Variables
 
