@@ -1,4 +1,4 @@
-import './App.module.css'
+import './App.css'
 import { App as AntdApp, ConfigProvider, theme as antdTheme } from 'antd'
 import { HomePage } from './components/pages'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
