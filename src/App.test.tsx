@@ -182,7 +182,7 @@ describe('App Component - Full User Interaction Flows', () => {
       // Should see validation error
       await waitFor(() => {
         expect(
-          screen.getByText(/please fill out all fields/i)
+          screen.getByText(/please fill out all required fields/i)
         ).toBeInTheDocument()
       })
 
