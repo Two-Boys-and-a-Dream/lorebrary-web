@@ -1,6 +1,7 @@
 import { describe, test, expect, vi } from 'vitest'
 import axios from 'axios'
-import API, { type Lore, type NewLore } from './API'
+import API from './API'
+import type { Lore, NewLore } from '../types/data'
 import { mockLoreData } from '../utils/testData'
 
 // Mock axios
@@ -68,7 +69,7 @@ describe('API', () => {
 
       const createdLore: Lore = {
         ...newLore,
-        _id: '4',
+        id: '4',
         createdAt: '2025-01-04T00:00:00.000Z',
         updatedAt: '2025-01-04T00:00:00.000Z',
       }

@@ -3,7 +3,7 @@ import { App, Button, Modal, Input, Flex, Typography } from 'antd'
 import { loreFieldsArr } from '../../utils/constants'
 import type { FormData } from '../../utils/utils'
 import type { UseMutationResult } from '@tanstack/react-query'
-import type { Lore, NewLore } from '../../api/API'
+import type { Lore, NewLore } from '../../types/data'
 
 const { TextArea } = Input
 const { Text } = Typography
@@ -15,7 +15,7 @@ interface LoreFormModalProps {
   mutation:
     | UseMutationResult<Lore, unknown, Lore, unknown>
     | UseMutationResult<Lore, unknown, NewLore, unknown>
-  _id?: string
+  id?: string
   onOpen?: () => void
 }
 
@@ -24,7 +24,7 @@ function LoreFormModal({
   onClose,
   initialFormData,
   mutation,
-  _id,
+  id,
 }: LoreFormModalProps) {
   const [formData, setFormData] = useState(initialFormData)
   const { message } = App.useApp()
@@ -62,14 +62,14 @@ function LoreFormModal({
     const newLore = loreFieldsArr.reduce(
       (o, key) => ({
         ...o,
-        ...(_id && { _id }),
+        ...(id && { id }),
         [key]: formData[key].value,
       }),
       {} as Lore | NewLore
     )
     try {
       // Type assertion is safe here because we know the mutation type matches
-      // whether we have an _id (update) or not (create)
+      // whether we have an id (update) or not (create)
       await mutation.mutateAsync(newLore as never)
       // As long as the mutation succeeds, clear the form data
       setFormData(initialFormData)
@@ -123,7 +123,7 @@ function LoreFormModal({
       centered
       maskClosable={false}
       width={800}
-      title={`${_id ? 'Update' : 'Create'} Lore`}
+      title={`${id ? 'Update' : 'Create'} Lore`}
       destroyOnHidden
       footer={[
         <Button key="cancel" onClick={handleClose}>
@@ -135,7 +135,7 @@ function LoreFormModal({
           onClick={onSubmit}
           loading={mutation.isPending}
         >
-          {_id ? 'Update' : 'Create'}
+          {id ? 'Update' : 'Create'}
         </Button>,
       ]}
     >

@@ -14,7 +14,8 @@ import { describe, test, expect, beforeEach, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { App } from './App'
-import API, { type Lore, type NewLore } from './api/API'
+import API from './api/API'
+import type { Lore, NewLore } from './types/data'
 import { mockLoreData } from './utils/testData'
 
 // Mock the API module
@@ -44,7 +45,7 @@ describe('App Component - Full User Interaction Flows', () => {
     >
     mockCreateLore.mockImplementation((newLore: NewLore) => {
       const lore: Lore = {
-        _id: `${mockLoreData.length + 1}`,
+        id: `${mockLoreData.length + 1}`,
         ...newLore,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -288,7 +289,7 @@ describe('App Component - Full User Interaction Flows', () => {
       await waitFor(() => {
         expect(mockUpdateLore).toHaveBeenCalledWith(
           expect.objectContaining({
-            _id: mockLoreData[1]._id,
+            id: mockLoreData[1].id,
             title: 'Updated Quest Title',
           })
         )
@@ -349,7 +350,7 @@ describe('App Component - Full User Interaction Flows', () => {
       // Verify API was called
       // Note: First displayed item is mockLoreData[1] due to sorting by createdAt
       await waitFor(() => {
-        expect(mockDeleteLore).toHaveBeenCalledWith(mockLoreData[1]._id)
+        expect(mockDeleteLore).toHaveBeenCalledWith(mockLoreData[1].id)
       })
 
       // Success toast should appear

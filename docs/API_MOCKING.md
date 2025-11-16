@@ -49,9 +49,9 @@ The mock API provides the following default behaviors:
 
 - **`getAllLore()`** - Returns `mockLoreData` (3 lore items)
 - **`createLore(newLore)`** - Returns a new lore item with generated ID and timestamps
-- **`deleteLore(_id)`** - Returns undefined (success)
+- **`deleteLore(id)`** - Returns undefined (success)
 - **`updateLore(updatedLore)`** - Returns the updated lore with new timestamp
-- **`getLoreById(_id)`** - Returns the matching lore item or rejects with error
+- **`getLoreById(id)`** - Returns the matching lore item or rejects with error
 
 ### Customizing Mock Behavior
 

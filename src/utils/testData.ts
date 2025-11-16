@@ -1,4 +1,4 @@
-import type { Lore } from '../api/API'
+import type { Lore } from '../types/data'
 
 /**
  * Default test data for Lore items
@@ -7,7 +7,7 @@ import type { Lore } from '../api/API'
  */
 export const mockLoreData: Lore[] = [
   {
-    _id: 'lore-1001',
+    id: 'lore-1001',
     title: 'The Ancient Prophecy',
     subtitle: 'A tale of destiny',
     game: 'Fantasy Quest',
@@ -16,7 +16,7 @@ export const mockLoreData: Lore[] = [
     updatedAt: '2025-01-02T00:00:00.000Z',
   },
   {
-    _id: 'lore-1002',
+    id: 'lore-1002',
     title: 'The Forgotten Temple',
     subtitle: 'Ruins of the old world',
     game: 'Adventure Chronicles',
@@ -25,7 +25,7 @@ export const mockLoreData: Lore[] = [
     updatedAt: '2025-01-03T00:00:00.000Z',
   },
   {
-    _id: 'lore-1003',
+    id: 'lore-1003',
     title: "The Dragon's Lair",
     subtitle: 'Where fire meets ice',
     game: 'Fantasy Quest',

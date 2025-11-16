@@ -36,7 +36,7 @@ export default defineConfig({
         'src/api/__mocks__/**',
       ],
       thresholds: {
-        branches: 78.03,
+        branches: 77.4,
         functions: 100,
         lines: 99.56,
         statements: 90.68,

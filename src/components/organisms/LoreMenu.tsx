@@ -2,7 +2,8 @@ import { MenuOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { App, Dropdown, Button, type MenuProps } from 'antd'
 import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import API, { type Lore } from '../../api/API'
+import API from '../../api/API'
+import type { Lore } from '../../types/data'
 import LoreFormModal from './LoreFormModal'
 import AlertPopup from '../molecules/AlertPopup'
 import { buildInitialFormData } from '../../utils/utils'
@@ -21,19 +22,19 @@ const items: MenuProps['items'] = [
 ]
 
 interface LoreMenuProps {
-  _id?: string
+  id?: string
 }
 
 /**
  * Hamburger menu on each LoreItem that gives
  * Update/Delete functionality
  */
-function LoreMenu({ _id }: LoreMenuProps) {
+function LoreMenu({ id }: LoreMenuProps) {
   const [updateModalOpen, setUpdateModalOpen] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const { message } = App.useApp()
   const queryClient = useQueryClient()
-  const data = queryClient.getQueryData<Lore>(['lore', _id])
+  const data = queryClient.getQueryData<Lore>(['lore', id])
 
   // Update mutation
   const updateMutation = useMutation({
@@ -53,7 +54,7 @@ function LoreMenu({ _id }: LoreMenuProps) {
 
   // Delete mutation
   const deleteMutation = useMutation({
-    mutationFn: () => API.deleteLore(_id!),
+    mutationFn: () => API.deleteLore(id!),
     onError: (error) => {
       message.error(error.message)
     },
@@ -82,8 +83,8 @@ function LoreMenu({ _id }: LoreMenuProps) {
         <Button icon={<MenuOutlined />} type="text" aria-label="Options" />
       </Dropdown>
       <LoreFormModal
-        key={updateModalOpen ? _id : 'closed'}
-        _id={_id}
+        key={updateModalOpen ? id : 'closed'}
+        id={id}
         initialFormData={existingData}
         mutation={updateMutation}
         isOpen={updateModalOpen}

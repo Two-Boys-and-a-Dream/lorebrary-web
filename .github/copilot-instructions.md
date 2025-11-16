@@ -6,7 +6,7 @@ React + TypeScript SPA for managing "Lore" items (game-related text snippets) wi
 
 **Tech Stack**: React 19, TypeScript, Ant Design v5, TanStack React Query v5, Vite, Vitest + Testing Library
 
-**Key Architecture Pattern**: React Query acts as client-side cache. The `HomePage` fetches all lore and sets individual items in cache by ID (`['lore', _id]`). Child components like `LoreItem` read from this cache using `queryClient.getQueryData()`. This eliminates prop drilling while maintaining data consistency.
+**Key Architecture Pattern**: React Query acts as client-side cache. The `HomePage` fetches all lore and sets individual items in cache by ID (`['lore', id]`). Child components like `LoreItem` read from this cache using `queryClient.getQueryData()`. This eliminates prop drilling while maintaining data consistency.
 
 ## Developer Workflows
 
@@ -73,7 +73,7 @@ const { data } = useQuery({
     const lore = await API.getAllLore()
     // ⚡ Critical: Set each item in cache by ID
     lore.forEach((element) =>
-      queryClient.setQueryData(['lore', element._id], element)
+      queryClient.setQueryData(['lore', element.id], element)
     )
     return lore
   },
@@ -81,7 +81,7 @@ const { data } = useQuery({
 
 // In LoreItem: Read from cache (no API call)
 const queryClient = useQueryClient()
-const data = queryClient.getQueryData<Lore>(['lore', _id])
+const data = queryClient.getQueryData<Lore>(['lore', id])
 ```
 
 **Why**: This pattern eliminates prop drilling. Child components access data via cache keys without re-fetching. Mutations invalidate `['lore']` to trigger refetch, which repopulates individual caches.
@@ -139,9 +139,9 @@ Default implementations:
 
 - `getAllLore()` → `mockLoreData` (3 items)
 - `createLore(newLore)` → new Lore with generated ID & timestamps
-- `deleteLore(_id)` → resolves successfully
+- `deleteLore(id)` → resolves successfully
 - `updateLore(updatedLore)` → returns updated lore with new `updatedAt`
-- `getLoreById(_id)` → finds by ID or rejects "Lore not found"
+- `getLoreById(id)` → finds by ID or rejects "Lore not found"
 
 Override when needed:
 

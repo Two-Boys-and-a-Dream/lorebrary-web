@@ -2,7 +2,7 @@ import { describe, test, expect, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import { renderWithProviders } from '../../utils/testUtils'
 import HomePage from './HomePage'
-import API, { type Lore } from '../../api/API'
+import API from '../../api/API'
 import { mockLoreData } from '../../utils/testData'
 
 // Mock the API module - the mock implementation is in src/api/__mocks__/index.ts
@@ -126,58 +126,5 @@ describe('HomePage Component', () => {
       mockLoreData[0].title, // The Ancient Prophecy (2025-01-02)
       mockLoreData[2].title, // The Dragon's Lair (2025-01-01) - oldest last
     ])
-  })
-
-  test('sorts lore with missing createdAt dates', async () => {
-    const mockGetAllLore = API.getAllLore as vi.MockedFunction<
-      typeof API.getAllLore
-    >
-
-    // Create test data with items missing createdAt to test both branches
-    const loreWithMissingDates: Lore[] = [
-      {
-        _id: 'lore-1',
-        title: 'Item with date',
-        subtitle: 'Has date',
-        game: 'Test',
-        text: 'Text',
-        createdAt: '2025-01-02T00:00:00.000Z',
-      },
-      {
-        _id: 'lore-2',
-        title: 'Item without date A',
-        subtitle: 'No date',
-        game: 'Test',
-        text: 'Text',
-        // No createdAt
-      },
-      {
-        _id: 'lore-3',
-        title: 'Item without date B',
-        subtitle: 'No date',
-        game: 'Test',
-        text: 'Text',
-        // No createdAt
-      },
-    ]
-
-    mockGetAllLore.mockResolvedValue(loreWithMissingDates)
-
-    renderWithProviders(<HomePage />)
-
-    // Wait for data to load
-    await waitFor(() => {
-      expect(screen.getByText('Item with date')).toBeInTheDocument()
-      expect(screen.getByText('Item without date A')).toBeInTheDocument()
-    })
-
-    // Items without dates should be sorted to the end (treated as epoch 0)
-    const loreTitles = screen
-      .getAllByRole('heading', { level: 4 })
-      .map((heading) => heading.textContent)
-      .filter((text) => text !== '')
-
-    // Item with date should be first, items without date can be in any order
-    expect(loreTitles[0]).toBe('Item with date')
   })
 })

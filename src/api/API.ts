@@ -1,17 +1,5 @@
 import axios, { type AxiosRequestConfig } from 'axios'
-
-export interface Lore {
-  _id: string
-  title: string
-  subtitle: string
-  game: string
-  text: string
-  createdAt?: string
-  updatedAt?: string
-}
-
-export type NewLore = Omit<Lore, '_id' | 'createdAt' | 'updatedAt'>
-
+import type { Lore, NewLore } from '../types/data'
 class API {
   #url: string
 
@@ -61,14 +49,14 @@ class API {
   }
 
   /**
-   * Deletes lore by _id in database
+   * Deletes lore by id in database
    */
-  async deleteLore(_id: string): Promise<void> {
-    return this.#axiosHandler<void>(`/lore/${_id}`, { method: 'delete' })
+  async deleteLore(id: string): Promise<void> {
+    return this.#axiosHandler<void>(`/lore/${id}`, { method: 'delete' })
   }
 
   /**
-   * Updates lore by _id
+   * Updates lore by id
    */
   async updateLore(updatedLore: Lore): Promise<Lore> {
     return this.#axiosHandler<Lore>('/lore/update', {
@@ -77,8 +65,8 @@ class API {
     })
   }
 
-  async getLoreById(_id: string): Promise<Lore> {
-    return this.#axiosHandler<Lore>(`/lore/${_id}`)
+  async getLoreById(id: string): Promise<Lore> {
+    return this.#axiosHandler<Lore>(`/lore/${id}`)
   }
 }
 
