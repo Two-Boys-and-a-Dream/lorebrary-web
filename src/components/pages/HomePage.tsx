@@ -6,7 +6,7 @@ import { type Lore } from '../../types/data'
 
 const { Text } = Typography
 
-type LoreOrPlaceholder = Lore | Pick<Lore, 'id'>
+type LoreOrPlaceholder = Pick<Lore, 'id'> | undefined
 
 export default function HomePage() {
   const queryClient = useQueryClient()
@@ -37,21 +37,23 @@ export default function HomePage() {
       return sortedLore
     },
   })
+
   if (error) {
     return <Text>{error.message}</Text>
   }
 
   // Create "fake" cards to render skeletons for while loading
   const loreData: LoreOrPlaceholder[] = !isFetched
-    ? Array.from({ length: 20 }, (_v, i) => ({
-        id: String(i),
-      }))
+    ? Array.from({ length: 20 }, () => undefined)
     : data.map((lore) => ({ id: lore.id }))
 
   return (
     <Flex gap={40} wrap justify="center">
-      {loreData.map(({ id }) => {
-        return <LoreItem key={id} id={id} />
+      {isFetched && data.length === 0 && (
+        <Text>No lore entries found. Create the first one!</Text>
+      )}
+      {loreData.map((item, index) => {
+        return <LoreItem key={item?.id || index} id={item?.id} />
       })}
     </Flex>
   )

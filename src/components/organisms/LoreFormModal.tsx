@@ -40,9 +40,35 @@ function LoreFormModal({
       [name]: {
         ...formData[name],
         value,
-        error: validateString(value),
+        error: ['subtitle', 'game'].includes(name)
+          ? false
+          : validateString(value),
       },
     })
+  }
+
+  /**
+   * Validates all formData. First implementation just checks
+   * That each field has __something__ in the string.
+   */
+  function validateForm(): boolean {
+    const clonedFormData = { ...formData }
+    let valid = true
+
+    // Check each object in formData to determine if any fields
+    // are invalid.
+    for (const v of Object.values(clonedFormData)) {
+      // Check for validation error
+      if (['subtitle', 'game'].includes(v.name)) continue // some can be empty
+      const isError = validateString(v.value)
+      // Set error to boolean
+      v.error = isError
+      if (v.error) valid = false
+    }
+
+    // Update state formData, return out boolean
+    setFormData(clonedFormData)
+    return valid
   }
 
   /**
@@ -53,7 +79,7 @@ function LoreFormModal({
     // First validate form,
     // if invalid set error states for inputs and bail early.
     if (!validateForm()) {
-      message.error('Please fill out all fields.')
+      message.error('Please fill out all required fields.')
       return
     }
 
@@ -83,29 +109,6 @@ function LoreFormModal({
    */
   function validateString(value: string): boolean {
     return !value
-  }
-
-  /**
-   * Validates all formData. First implementation just checks
-   * That each field has __something__ in the string.
-   */
-  function validateForm(): boolean {
-    const clonedFormData = { ...formData }
-    let valid = true
-
-    // Check each object in formData to determine if any fields
-    // are invalid.
-    for (const v of Object.values(clonedFormData)) {
-      // Check for validation error
-      const isError = validateString(v.value)
-      // Set error to boolean
-      v.error = isError
-      if (v.error) valid = false
-    }
-
-    // Update state formData, return out boolean
-    setFormData(clonedFormData)
-    return valid
   }
 
   /**
@@ -155,6 +158,11 @@ function LoreFormModal({
                 name={field}
                 value={formData[field].value}
                 onChange={onChange}
+                placeholder={
+                  ['subtitle', 'game'].includes(field)
+                    ? '(Optional)'
+                    : '(Required)'
+                }
                 status={formData[field].error ? 'error' : ''}
                 rows={field === 'text' ? 4 : undefined}
               />

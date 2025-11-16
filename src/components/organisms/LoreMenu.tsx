@@ -1,7 +1,7 @@
 import { MenuOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { App, Dropdown, Button, type MenuProps } from 'antd'
 import { useState } from 'react'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import API from '../../api/API'
 import type { Lore } from '../../types/data'
 import LoreFormModal from './LoreFormModal'
@@ -34,7 +34,9 @@ function LoreMenu({ id }: LoreMenuProps) {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const { message } = App.useApp()
   const queryClient = useQueryClient()
-  const data = queryClient.getQueryData<Lore>(['lore', id])
+  const { data } = useQuery<Lore>({
+    queryKey: ['lore', id],
+  })
 
   // Update mutation
   const updateMutation = useMutation({
@@ -45,8 +47,7 @@ function LoreMenu({ id }: LoreMenuProps) {
     onSuccess: async () => {
       message.success('Lore updated!')
       await queryClient.invalidateQueries({
-        queryKey: ['lore'],
-        exact: true,
+        queryKey: ['lore', id],
       })
       setUpdateModalOpen(false)
     },
@@ -62,7 +63,6 @@ function LoreMenu({ id }: LoreMenuProps) {
       message.success('Lore deleted!')
       await queryClient.invalidateQueries({
         queryKey: ['lore'],
-        exact: true,
       })
     },
     onSettled: () => {
